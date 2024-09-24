@@ -1,5 +1,10 @@
+import UploadAssets from "@/components/upload_assets/UploadAssets";
+
 export default function Home() {
   return (
-    <h1>Hello, World!</h1>
+    <main>
+      <h1>Hello, World!</h1>
+      <UploadAssets />
+    </main>
   );
 }
