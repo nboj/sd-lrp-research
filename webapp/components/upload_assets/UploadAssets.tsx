@@ -1,5 +1,4 @@
 'use client'
-import styles from '@/components/upload_assets/UploadAssets.module.scss'
 import { useState } from 'react'
 import Image from 'next/image'
 import { upload } from '@/actions/file_actions'
@@ -15,7 +14,7 @@ const Collection = ({ label }: Props) => {
         setNoiseFiles([])
         if (files) {
             for (let i = 0; i < files.length; i++) {
-                setNoiseFiles((old: any) => [...old, files[i]])
+                setNoiseFiles((old: File[]) => [...old, files[i]])
             }
         }
     };

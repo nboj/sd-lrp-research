@@ -12,6 +12,7 @@ const del_asset_list = async (paths: string[]) => {
 }
 
 export const upload = async (_: any, formData: FormData) => {
+  const start = Date.now()
   const prompt: string = formData.get('prompt') as any
   const noise: File[] = formData.getAll('noise') as any[]
   const lrp1: File[] = formData.getAll('lrp1') as any[]
@@ -37,7 +38,8 @@ export const upload = async (_: any, formData: FormData) => {
    * Insert into postgres and blob
    **/
   const paths: any = []
-  const tasks = []
+  const tasks: any = []
+  const gen_tasks: any = []
   try {
     await client.sql`BEGIN`
     const { id: generation_id } = (await client.sql`
@@ -46,42 +48,39 @@ export const upload = async (_: any, formData: FormData) => {
       RETURNING id
     `).rows[0]
     for (let i = 0; i < length; i++) {
-      const { id: iteration_id } = (await client.sql`
-        INSERT INTO iterations (index, generation_id)
-        VALUES (${i}, ${generation_id})
-        RETURNING id
-      `).rows[0]
-      const put_paths = async () => {
+      const gen_task = async () => {
+        const { id: iteration_id } = (await client.sql`
+          INSERT INTO iterations (index, generation_id)
+          VALUES (${i}, ${generation_id})
+          RETURNING id
+        `).rows[0]
+        const put_path = async (iteration_id: any, file: File, path: string, type: string) => {
+          const noise_blob = await put(path, file, { access: 'public' })
+          paths.push(noise_blob.url)
+          await client.sql`
+            INSERT INTO assets (iteration_id, pathname, asset_type)
+            VALUES (${iteration_id}, ${noise_blob.url}, ${type})
+          `
+          console.log(iteration_id)
+        }
         const parent_path = `generation-${generation_id}`
-        const noise_blob = await put(`${parent_path}/noise/noise-${i}`, noise[i], { access: 'public' })
-        paths.push(noise_blob.url)
-        const lrp1_blob = await put(`${parent_path}/lrp2/lrp-${i}`, lrp2[i], { access: 'public' })
-        paths.push(lrp1_blob.url)
-        const lrp2_blob = await put(`${parent_path}/lrp1/lrp-${i}`, lrp1[i], { access: 'public' })
-        paths.push(lrp2_blob.url)
-        await client.sql`
-          INSERT INTO assets (iteration_id, pathname, asset_type)
-          VALUES (${iteration_id}, ${noise_blob.url}, 'noise')
-        `
-        await client.sql`
-          INSERT INTO assets (iteration_id, pathname, asset_type)
-          VALUES (${iteration_id}, ${lrp1_blob.url}, 'lrp1')
-        `
-        await client.sql`
-          INSERT INTO assets (iteration_id, pathname, asset_type)
-          VALUES (${iteration_id}, ${lrp2_blob.url}, 'lrp2')
-        `
-        console.log(iteration_id)
+        tasks.push(put_path(iteration_id, noise[i], `${parent_path}/noise/noise-${i}`, 'noise'))
+        tasks.push(put_path(iteration_id, lrp1[i], `${parent_path}/lrp2/lrp-${i}`, 'lrp1'))
+        tasks.push(put_path(iteration_id, lrp2[i], `${parent_path}/lrp1/lrp-${i}`, 'lrp2'))
       }
-      tasks.push(put_paths())
+      gen_tasks.push(gen_task())
     }
+    await Promise.all(gen_tasks)
     await Promise.all(tasks)
+    // await del_asset_list(paths)
+    // await client.sql`ROLLBACK`
+    await client.sql`COMMIT`
     console.log("Success.")
-    await del_asset_list(paths)
-    await client.sql`ROLLBACK`
   } catch (e) {
     console.log(e)
     await client.sql`ROLLBACK`
     await del_asset_list(paths)
+  } finally {
+    console.log((Date.now() - start) / 1000)
   }
 }
