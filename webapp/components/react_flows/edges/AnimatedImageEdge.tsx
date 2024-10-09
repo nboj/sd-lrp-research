@@ -8,6 +8,7 @@ export type AnimatedImageEdge = Edge<{
     offsetX: string,
     offsetY: string,
     dur: number,
+    scale: number,
 }, 'animatedImage'>;
 const default_data = {
     image: null,
@@ -16,6 +17,7 @@ const default_data = {
     offsetX: '-25px',
     offsetY: '-25px',
     dur: 2,
+    scale: 1,
 }
 const AnimatedImageEdge = ({
     id,
@@ -36,13 +38,13 @@ const AnimatedImageEdge = ({
         targetPosition,
     });
     const {
-        image, width, height, offsetX, offsetY, dur
+        image, width, height, offsetX, offsetY, dur, scale
     } = { ...default_data, ...data }
     if (!image) return
     return (
         <>
             <BaseEdge id={id} path={edgePath} />
-            <image href={image} width={width} height={height} className={`origin-left`} style={{ transform: `translate(${offsetX}, ${offsetY})` }}>
+            <image href={image} width={width} height={height} className={`origin-left`} style={{ transform: `translate(${offsetX}, ${offsetY}) scale(${scale})` }}>
                 <animateMotion path={edgePath} repeatCount={'indefinite'} dur={dur} />
             </image>
         </>

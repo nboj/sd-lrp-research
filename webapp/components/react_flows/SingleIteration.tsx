@@ -11,6 +11,7 @@ import unet_img from '@/public/single_iteration/unet.png';
 import time_embeds_img from '@/public/single_iteration/time_embeds_visual.png';
 import sd_overview from '@/public/single_iteration/stable-diffusion-overview.png';
 import text_rel_scores from '@/public/single_iteration/text_relevance_scores.png';
+import lrp_heatmap from '@/public/single_iteration/lrp_heatmap.png';
 import AnimatedImageEdge from "./edges/AnimatedImageEdge"
 
 const Handles = memo(({ left = 'source', right = 'target', disable_left = false, disable_right = false }: any) => {
@@ -225,7 +226,8 @@ const initial_edges = [
         id: "e1-1",
         type: 'image',
         data: {
-            image: less_noise_img.src
+            image: less_noise_img.src,
+            dur: 4,
         },
         animated: true,
         source: "pred_noise",
@@ -240,7 +242,6 @@ const initial_edges = [
             height: 300,
             offsetY: '-100%',
             offsetX: '-50%',
-            dur: 1,
         },
         animated: true,
         source: "unet",
@@ -248,7 +249,20 @@ const initial_edges = [
     },
     { id: "e2-2", animated: true, source: "unet", target: 'time_embeds' },
 
-    { id: "e3-1", animated: true, source: "rgb", target: 'prev_pred_noise' },
+    {
+        id: "e3-1",
+        animated: true,
+        type: 'image',
+        data: {
+            image: lrp_heatmap.src,
+            scale: 2,
+            offsetY: "20%",
+            offsetX: "-15%",
+            dur: 4,
+        },
+        source: "rgb",
+        target: 'prev_pred_noise'
+    },
 
     { id: "epixel-1", animated: true, source: "unet", target: 'pixel-1' },
     { id: "epixel-2", animated: true, source: "unet", target: 'pixel-2' },
