@@ -37,13 +37,13 @@
 .menu_button {
   display: none;
   font-size: 20px;
+  padding: 1rem;
 }
 
 .menu_wrapper {
   display: none;
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
+  background-color: rgba(0, 0, 0, 0);
   top: 0;
   left: 0;
   width: 100%;
@@ -54,7 +54,7 @@
 }
 
 .open_menu_wrapper {
-  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .menu {

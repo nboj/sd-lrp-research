@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
+import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "SD LRP",
@@ -14,8 +15,10 @@ const RootLayout = ({ children }: Props) => {
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        {children}
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html >
   );

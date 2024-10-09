@@ -1,7 +1,8 @@
 'use client'
 import { Background, Handle, Position, ReactFlow, Controls } from "@xyflow/react"
 import styles from '@/components/react_flows/SingleIteration.module.css'
-import { memo } from "react"
+import { memo, useCallback, useState } from "react"
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
 
 const Handles = memo(({ left = 'source', right = 'target', disable_left = false, disable_right = false }: any) => {
     return (
@@ -116,6 +117,8 @@ const initial_nodes = [
         },
         position: { x: incXPos(), y: 0 }
     },
+
+
     {
         id: 'rgb',
         type: 'rgb',
@@ -216,9 +219,66 @@ const initial_edges = [
     { id: "epixel-2", animated: true, source: "unet", target: 'pixel-2' },
     { id: "epixel-3", animated: true, source: "unet", target: 'pixel-3' },
 ]
+
+type PopupProps = Readonly<{
+    node_id: string;
+    isOpen: boolean;
+    onOpen: any;
+    onOpenChange: any;
+}>
+const Popup = ({ node_id, isOpen, onOpen, onOpenChange }: PopupProps) => {
+    return (
+        <Modal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+        >
+            <ModalContent className="bg-[var(--background)]">
+                {(onClose) => (
+                    <>
+                        <ModalHeader className="flex flex-col gap-1">{node_id}</ModalHeader>
+                        <ModalBody>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                Nullam pulvinar risus non risus hendrerit venenatis.
+                                Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                            </p>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                Nullam pulvinar risus non risus hendrerit venenatis.
+                                Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                            </p>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="danger" variant="light" onPress={onClose}>
+                                Close
+                            </Button>
+                            <Button color="primary" onPress={onClose}>
+                                Action
+                            </Button>
+                        </ModalFooter>
+                    </>
+                )}
+            </ModalContent>
+        </Modal>
+    )
+}
+Popup.displayName = 'Popup';
+
 const SingleIteration = () => {
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const [selectedId, setSelectedId] = useState<string>("")
+    const handle_click = useCallback((_: any, node: any) => {
+        setSelectedId(node.id)
+        onOpen()
+    }, [])
     return (
         <div className={styles.wrapper}>
+            <Popup
+                node_id={selectedId}
+                isOpen={isOpen}
+                onOpen={onOpen}
+                onOpenChange={onOpenChange}
+            />
             <ReactFlow
                 nodeTypes={node_types}
                 nodes={initial_nodes}
@@ -228,6 +288,7 @@ const SingleIteration = () => {
                 zoomOnScroll={false}
                 nodesConnectable={false}
                 elementsSelectable={false}
+                onNodeClick={handle_click}
             >
                 <Background />
                 <Controls
