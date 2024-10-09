@@ -31,3 +31,9 @@ export type FullIteration = {
   iteration: Iteration;
   assets: Asset[]
 }
+
+export type Link = {
+  name: string;
+  href: string;
+  icon: React.ReactNode;
+}

@@ -1,5 +1,5 @@
 import { sql } from "@vercel/postgres"
-import ListGenerations from "../list_generations/ListGenerations"
+import ListGenerations from "@/components/generation/list_generations/ListGenerations"
 import { Generation } from "@/lib/types"
 
 const ListGenerationsServer = async () => {

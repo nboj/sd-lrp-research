@@ -1,4 +1,4 @@
-import GenerationServer from "@/components/generation_server/GenerationServer";
+import GenerationServer from "@/components/generation/generation_server/GenerationServer";
 import { Suspense } from "react";
 
 type Props = Readonly<{
