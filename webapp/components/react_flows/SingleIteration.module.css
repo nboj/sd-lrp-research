@@ -72,3 +72,22 @@
     }
   }
 }
+
+.pred_noise_popup_images {
+  container: pred_noise_container / inline-size;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pred_noise_popup_image {
+  width: 49cqw;
+  border-radius: 0 0 5px 5px;
+}
+
+.pred_noise_popup_label {
+  text-align: center;
+  width: 49cqw;
+  padding-block: .5rem;
+  background: var(--primary);
+  border-radius: 5px 5px 0 0;
+}

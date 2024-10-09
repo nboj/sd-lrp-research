@@ -3,6 +3,15 @@ import { Background, Handle, Position, ReactFlow, Controls } from "@xyflow/react
 import styles from '@/components/react_flows/SingleIteration.module.css'
 import { memo, useCallback, useState } from "react"
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
+import Link from 'next/link';
+import Image from 'next/image';
+import less_noise_img from '@/public/single_iteration/less_noise.png';
+import more_noise_img from '@/public/single_iteration/more_noise.png';
+import unet_img from '@/public/single_iteration/unet.png';
+import time_embeds_img from '@/public/single_iteration/time_embeds_visual.png';
+import sd_overview from '@/public/single_iteration/stable-diffusion-overview.png';
+import text_rel_scores from '@/public/single_iteration/text_relevance_scores.png';
+import AnimatedImageEdge from "./edges/AnimatedImageEdge"
 
 const Handles = memo(({ left = 'source', right = 'target', disable_left = false, disable_right = false }: any) => {
     return (
@@ -208,9 +217,35 @@ const initial_nodes = [
         position: { x: incXPos(), y: 150 }
     },
 ]
+const edge_types = {
+    'image': AnimatedImageEdge,
+}
 const initial_edges = [
-    { id: "e1-1", animated: true, source: "pred_noise", target: 'unet' },
-    { id: "e2-1", animated: true, source: "unet", target: 'text_embeds' },
+    {
+        id: "e1-1",
+        type: 'image',
+        data: {
+            image: less_noise_img.src
+        },
+        animated: true,
+        source: "pred_noise",
+        target: 'unet'
+    },
+    {
+        id: "e2-1",
+        type: 'image',
+        data: {
+            image: text_rel_scores.src,
+            width: 300,
+            height: 300,
+            offsetY: '-100%',
+            offsetX: '-50%',
+            dur: 1,
+        },
+        animated: true,
+        source: "unet",
+        target: 'text_embeds'
+    },
     { id: "e2-2", animated: true, source: "unet", target: 'time_embeds' },
 
     { id: "e3-1", animated: true, source: "rgb", target: 'prev_pred_noise' },
@@ -220,40 +255,94 @@ const initial_edges = [
     { id: "epixel-3", animated: true, source: "unet", target: 'pixel-3' },
 ]
 
+const PopupBody = ({ node_id }: any) => {
+    switch (node_id) {
+        case "pred_noise":
+            return (
+                <>
+                    <ModalHeader className="flex flex-col gap-1">Predicted Noise</ModalHeader>
+                    <ModalBody>
+                        <p>This represents the output prediction from the unet model. This prediction is then used to remove noise from the input which produces a less noisy result. (this example is exaggerated)</p>
+                        <div>
+                            <div className={`${styles.pred_noise_popup_images}`}>
+                                <p className={`${styles.pred_noise_popup_label}`}>Previous Input</p>
+                                <p className={`${styles.pred_noise_popup_label}`}>After Noise Removal</p>
+                            </div>
+                            <div className={`${styles.pred_noise_popup_images}`}>
+                                <Image src={more_noise_img} alt='' className={`${styles.pred_noise_popup_image}`} />
+                                <Image src={less_noise_img} alt='' className={`${styles.pred_noise_popup_image}`} />
+                            </div>
+                        </div>
+                        <p>For relevance scores, either the final predicted noise from the generation or the relevance scores from the previous iteration are used as input to the LRP integration in any given iteration.</p>
+                    </ModalBody>
+                </>
+            )
+        case "unet":
+            return (
+                <>
+                    <ModalHeader className="flex flex-col gap-1">Unet</ModalHeader>
+                    <ModalBody>
+                        <p>This is the beef of the diffusion process. The unet takes the input noisy image, and predicts noise to remove from it.</p>
+                        <p>For layer-wise relevance propagation, you can checkout <Link className={`text-blue-500`} href='/unet'>this</Link> where we explain in more detail.</p>
+                        <div>
+                            <Image src={unet_img} alt='' className={`rounded-[5px]`} />
+                        </div>
+                    </ModalBody>
+                </>
+            )
+        case "text_embeds":
+            return (
+                <>
+                    <ModalHeader className="flex flex-col gap-1">Text Embeddings</ModalHeader>
+                    <ModalBody>
+                        <p>The relevance scores for text embeddings are found at each cross-attention layer, for each iteration.</p>
+                        <div>
+                            <Image src={sd_overview} alt='' className={`rounded-[5px] mx-auto`} />
+                        </div>
+                    </ModalBody>
+                </>
+            )
+        case "time_embeds":
+            return (
+                <>
+                    <ModalHeader className="flex flex-col gap-1">Time Embeddings</ModalHeader>
+                    <ModalBody>
+                        <p>Time Embeddings are the result of a couple of Linear/Conv2D layers, which transforms the timestamp into a meaningful representation for the <Link className={`text-blue-500`} href='/unet'>Unet</Link> model.</p>
+                        <div>
+                            <Image src={time_embeds_img} alt='' className={`rounded-[5px]`} />
+                        </div>
+                    </ModalBody>
+                </>
+            )
+        default:
+            return (
+                <ModalHeader className="flex flex-col gap-1">Error.</ModalHeader>
+            )
+    }
+}
+PopupBody.displayName = 'PopupBody';
+
 type PopupProps = Readonly<{
-    node_id: string;
     isOpen: boolean;
-    onOpen: any;
     onOpenChange: any;
+    children: React.ReactNode;
+    scrollBehavior: 'normal' | 'inside' | 'outside';
 }>
-const Popup = ({ node_id, isOpen, onOpen, onOpenChange }: PopupProps) => {
+const Popup = ({ isOpen, onOpenChange, children, scrollBehavior }: PopupProps) => {
     return (
         <Modal
             isOpen={isOpen}
             onOpenChange={onOpenChange}
+            placement="bottom-center"
+            scrollBehavior={scrollBehavior}
         >
             <ModalContent className="bg-[var(--background)]">
                 {(onClose) => (
                     <>
-                        <ModalHeader className="flex flex-col gap-1">{node_id}</ModalHeader>
-                        <ModalBody>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Nullam pulvinar risus non risus hendrerit venenatis.
-                                Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                            </p>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Nullam pulvinar risus non risus hendrerit venenatis.
-                                Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                            </p>
-                        </ModalBody>
+                        {children}
                         <ModalFooter>
                             <Button color="danger" variant="light" onPress={onClose}>
                                 Close
-                            </Button>
-                            <Button color="primary" onPress={onClose}>
-                                Action
                             </Button>
                         </ModalFooter>
                     </>
@@ -274,13 +363,15 @@ const SingleIteration = () => {
     return (
         <div className={styles.wrapper}>
             <Popup
-                node_id={selectedId}
+                scrollBehavior={`${selectedId == "text_embeds" ? "outside" : "inside"}`}
                 isOpen={isOpen}
-                onOpen={onOpen}
                 onOpenChange={onOpenChange}
-            />
+            >
+                <PopupBody node_id={selectedId} />
+            </Popup>
             <ReactFlow
                 nodeTypes={node_types}
+                edgeTypes={edge_types}
                 nodes={initial_nodes}
                 edges={initial_edges}
                 fitView
@@ -289,6 +380,7 @@ const SingleIteration = () => {
                 nodesConnectable={false}
                 elementsSelectable={false}
                 onNodeClick={handle_click}
+                zoomOnDoubleClick={false}
             >
                 <Background />
                 <Controls

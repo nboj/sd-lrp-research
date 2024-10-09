@@ -30,6 +30,7 @@
 
 .nav_title {
   margin-block: 30px;
+  margin-left: 10px;
   font-size: 18px;
   font-weight: 900;
 }
@@ -98,6 +99,7 @@
   .nav {
     flex-direction: row;
     width: 100%;
+    border-right: none;
     border-bottom: 1px solid var(--primary);
     align-items: center;
     justify-content: space-between;
