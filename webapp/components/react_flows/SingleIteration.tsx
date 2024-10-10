@@ -2,7 +2,7 @@
 import { Background, ReactFlow, Controls, useNodesState, useEdgesState } from "@xyflow/react"
 import styles from '@/components/react_flows/SingleIteration.module.css'
 import { useCallback, useState } from "react"
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
+import { ModalBody, ModalHeader, useDisclosure } from "@nextui-org/react"
 import Link from 'next/link';
 import Image from 'next/image';
 import less_noise_img from '@/public/single_iteration/less_noise.png';
@@ -12,19 +12,10 @@ import time_embeds_img from '@/public/single_iteration/time_embeds_visual.png';
 import sd_overview from '@/public/single_iteration/stable-diffusion-overview.png';
 import text_rel_scores from '@/public/single_iteration/text_relevance_scores.png';
 import lrp_heatmap from '@/public/single_iteration/lrp_heatmap.png';
-import { AnimatedImageEdge } from "@/components/react_flows/edges/AnimatedImageEdge"
-import { CircleNode, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
+import Popup from "@/components/popup/Popup";
+import { EDGE_TYPES, NODE_TYPES } from "@/lib/types"
 
 
-const node_types = {
-    square: SquareNode,
-    circle: CircleNode,
-    rgb: RGBNode,
-    pixel: PixelNode,
-    title: TitleText,
-    subtitle: SubtitleText,
-    image: ImageNode,
-}
 let i = 0;
 const incXPos = (factor: number = 350) => {
     return ++i * factor;
@@ -33,6 +24,15 @@ const getXPos = (factor: number = 350) => {
     return i * factor;
 }
 const initial_nodes = [
+    {
+        id: 'prev_pred_img',
+        type: 'image',
+        data: {
+            image: lrp_heatmap,
+            text: "LRP Heatmap",
+        },
+        position: { x: 0, y: 0 },
+    },
     {
         id: 'prev_pred_noise',
         type: 'circle',
@@ -52,16 +52,6 @@ const initial_nodes = [
         },
         position: { x: incXPos(), y: 0 }
     },
-    {
-        id: 'prev_pred_img',
-        type: 'image',
-        data: {
-            image: lrp_heatmap,
-        },
-        position: { x: 0, y: 0 },
-    },
-
-
     {
         id: 'rgb',
         type: 'rgb',
@@ -103,8 +93,6 @@ const initial_nodes = [
         position: { x: 60, y: 40 },
         parentId: 'rgb',
     },
-
-
     {
         id: 'title',
         type: 'title',
@@ -113,14 +101,13 @@ const initial_nodes = [
         },
         position: { x: incXPos() - 100, y: -150 }
     },
-
-
     {
         id: 'text_embeds_img',
         type: 'image',
         data: {
             image: text_rel_scores,
-            scale: 2,
+            text: 'Textual Heatmap',
+            width: "300px",
         },
         position: { x: 0, y: 0 }
     },
@@ -154,7 +141,8 @@ const initial_nodes = [
         id: 'pred_noise_img',
         type: 'image',
         data: {
-            image: less_noise_img
+            image: less_noise_img,
+            text: 'Final Result'
         },
         position: { x: 0, y: 0 }
     },
@@ -168,9 +156,7 @@ const initial_nodes = [
         position: { x: incXPos(), y: 150 }
     },
 ]
-const edge_types = {
-    'image': AnimatedImageEdge,
-}
+
 const initial_edges = [
     {
         id: "e1-1",
@@ -327,37 +313,6 @@ const PopupBody = ({ node_id }: any) => {
 }
 PopupBody.displayName = 'PopupBody';
 
-type PopupProps = Readonly<{
-    isOpen: boolean;
-    onOpenChange: any;
-    children: React.ReactNode;
-    scrollBehavior: 'normal' | 'inside' | 'outside';
-}>
-const Popup = ({ isOpen, onOpenChange, children, scrollBehavior }: PopupProps) => {
-    return (
-        <Modal
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-            placement="bottom-center"
-            scrollBehavior={scrollBehavior}
-        >
-            <ModalContent className="bg-[var(--background)]">
-                {(onClose) => (
-                    <>
-                        {children}
-                        <ModalFooter>
-                            <Button color="danger" variant="light" onPress={onClose}>
-                                Close
-                            </Button>
-                        </ModalFooter>
-                    </>
-                )}
-            </ModalContent>
-        </Modal>
-    )
-}
-Popup.displayName = 'Popup';
-
 const SingleIteration = () => {
     const [nodes, , onNodesChange] = useNodesState(initial_nodes);
     const [edges, , onEdgesChange] = useEdgesState(initial_edges);
@@ -391,15 +346,15 @@ const SingleIteration = () => {
                 <PopupBody node_id={selectedId} />
             </Popup>
             <ReactFlow
-                nodeTypes={node_types}
-                edgeTypes={edge_types}
+                nodeTypes={NODE_TYPES}
+                edgeTypes={EDGE_TYPES}
                 nodes={nodes}
                 edges={edges}
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 fitView
                 nodesDraggable={false}
-                zoomOnScroll={false}
+                zoomOnScroll={true}
                 nodesConnectable={false}
                 elementsSelectable={false}
                 onNodeClick={handle_click}

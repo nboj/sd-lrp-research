@@ -39,8 +39,31 @@
 }
 
 .image_node {
-  & img {
-    border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  border: 1px solid var(--secondary);
+  background: var(--background);
+  width: 150px;
+
+  & .text {
+    background: var(--primary);
+    padding: 0.8rem;
+  }
+
+  & .img_container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    & img {
+      border-radius: 4px;
+    }
+
+  }
+
+  &:has(.text) img {
+    border-radius: 4px 4px 0 0;
   }
 }
 

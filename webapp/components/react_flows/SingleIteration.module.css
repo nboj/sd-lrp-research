@@ -5,56 +5,6 @@
   border: 2px solid var(--secondary);
 }
 
-.square_node {
-  width: 260px;
-  text-align: center;
-  background-color: var(--primary);
-  border-radius: 12px;
-  padding: 10px;
-  border: 2px solid var(--secondary);
-}
-
-.circle_node {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 150px;
-  aspect-ratio: 1/1;
-  text-align: center;
-  background-color: var(--primary);
-  border-radius: 50%;
-  padding: 10px;
-  border: 2px solid var(--secondary);
-}
-
-.rgb_node {
-  width: 200px;
-  height: 400px;
-  display: flex;
-  flex-direction: column;
-  background: var(--primary);
-  border: 2px solid var(--secondary);
-  padding: 10px;
-  border-radius: 12px;
-}
-
-.image_node {
-  & img {
-    border-radius: 5px;
-  }
-}
-
-.pixel_node {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: red;
-  width: 80px;
-  aspect-ratio: 1/1;
-  border-radius: 50%;
-  border: 2px solid var(--secondary);
-}
-
 .title {
   width: 500px;
 

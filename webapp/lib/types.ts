@@ -1,3 +1,6 @@
+import { AnimatedImageEdge } from "@/components/react_flows/edges/AnimatedImageEdge";
+import { CircleNode, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
+
 export type Generation = {
   id: number;
   prompt: string;
@@ -36,4 +39,18 @@ export type Link = {
   name: string;
   href: string;
   icon: React.ReactNode;
+}
+
+export const EDGE_TYPES = {
+  'image': AnimatedImageEdge
+}
+
+export const NODE_TYPES = {
+  square: SquareNode,
+  circle: CircleNode,
+  rgb: RGBNode,
+  pixel: PixelNode,
+  title: TitleText,
+  subtitle: SubtitleText,
+  image: ImageNode,
 }

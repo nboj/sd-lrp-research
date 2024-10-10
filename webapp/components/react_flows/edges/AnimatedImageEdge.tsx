@@ -57,11 +57,13 @@ export const AnimatedImageEdge = ({
         node_el.style.offsetRotate = '0deg';
         node_el.style.offsetAnchor = 'center';
         node_el.style.transformOrigin = 'center';
+        node_el.style.pointerEvents = "none";
         node_el.style.opacity = '0';
         const wasDraggable = getNode(node)?.draggable;
         updateNode(node, { draggable: false });
         return () => {
             node_el.style.offsetPath = 'none';
+            node_el.style.pointerEvents = "all";
             updateNode(node, { draggable: wasDraggable })
         }
     }, [selector, edgePath])

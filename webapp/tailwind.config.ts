@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-const { nextui } = require('@nextui-org/react');
+import { nextui } from '@nextui-org/react';
 
 const config: Config = {
   content: [
@@ -13,6 +13,12 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: {
+          DEFAULT: "var(--primary)"
+        },
+        secondary: {
+          DEFAULT: "var(--secondary)"
+        },
       },
     },
   },

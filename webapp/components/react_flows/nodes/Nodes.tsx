@@ -54,8 +54,13 @@ const CircleNode = memo(({ data }: any) => {
 CircleNode.displayName = 'CircleNode'
 const ImageNode = memo(({ data }: any) => {
     return (
-        <div className={styles.image_node}>
-            <Image src={data.image} alt='' width={100} height={100} style={{ transform: `scale(${data.scale})` }} />
+        <div className={styles.image_node} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
+            <div className={styles.img_container}>
+                <Image src={data.image} alt='' />
+            </div>
+            {
+                data?.text && <p className={styles.text}>{data.text}</p>
+            }
         </div>
     )
 })
