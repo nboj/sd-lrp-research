@@ -2,6 +2,7 @@ import { Handle, Position } from "@xyflow/react";
 import { memo } from "react";
 import Image from 'next/image';
 import styles from '@/components/react_flows/nodes/Nodes.module.css';
+import { Card, CardBody, CardFooter } from "@nextui-org/react";
 
 const Handles = memo(({ left = 'source', right = 'target', top = 'target', bottom = 'source', disable_left = false, disable_right = false, disable_top = true, disable_bottom = true }: any) => {
     return (
@@ -54,14 +55,18 @@ const CircleNode = memo(({ data }: any) => {
 CircleNode.displayName = 'CircleNode'
 const ImageNode = memo(({ data }: any) => {
     return (
-        <div className={styles.image_node} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
-            <div className={styles.img_container}>
+        <Card className={`dark ${styles.image_node}`} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
+            <CardBody>
                 <Image src={data.image} alt='' />
-            </div>
+            </CardBody>
             {
-                data?.text && <p className={styles.text}>{data.text}</p>
+                data?.text && (
+                    <CardFooter>
+                        <p className={styles.text}>{data.text}</p>
+                    </CardFooter>
+                )
             }
-        </div>
+        </Card>
     )
 })
 ImageNode.displayName = 'ImageNode'

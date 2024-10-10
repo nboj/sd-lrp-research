@@ -2,7 +2,7 @@
 import { Background, ReactFlow, Controls, useNodesState, useEdgesState } from "@xyflow/react"
 import styles from '@/components/react_flows/SingleIteration.module.css'
 import { useCallback, useState } from "react"
-import { ModalBody, ModalHeader, useDisclosure } from "@nextui-org/react"
+import { Card, CardBody, CardFooter, CardHeader, ModalBody, ModalHeader, useDisclosure } from "@nextui-org/react"
 import Link from 'next/link';
 import Image from 'next/image';
 import Popup from "@/components/popup/Popup";
@@ -256,26 +256,34 @@ const PopupBody = ({ node_id }: any) => {
                     <ModalHeader className="flex flex-col gap-1">Predicted Noise</ModalHeader>
                     <ModalBody>
                         <p>This represents the output prediction from the unet model. This prediction is then used to remove noise from the input which produces a less noisy result. (this example is exaggerated)</p>
-                        <div>
-                            <div className={`${styles.pred_noise_popup_images}`}>
-                                <p className={`${styles.pred_noise_popup_label}`}>Previous Input</p>
-                                <p className={`${styles.pred_noise_popup_label}`}>After Noise Removal</p>
-                            </div>
-                            <div className={`${styles.pred_noise_popup_images}`}>
-                                <Image src={more_noise_img} alt='' className={`${styles.pred_noise_popup_image}`} />
-                                <Image src={less_noise_img} alt='' className={`${styles.pred_noise_popup_image}`} />
-                            </div>
+                        <div className='flex gap-2'>
+                            <Card isFooterBlurred >
+                                <CardHeader className="px-4">
+                                    <p className='font-bold'>Previous Input</p>
+                                </CardHeader>
+                                <CardBody>
+                                    <Image src={more_noise_img} alt='' className='rounded-xl' />
+                                </CardBody>
+                            </Card>
+                            <Card isFooterBlurred >
+                                <CardHeader className="px-4">
+                                    <p className='font-bold'>After Noise Removal</p>
+                                </CardHeader>
+                                <CardBody>
+                                    <Image src={less_noise_img} alt='' className='rounded-xl' />
+                                </CardBody>
+                            </Card>
                         </div>
                         <p>For relevance scores, either the final predicted noise from the generation or the relevance scores from the previous iteration are used as input to the LRP integration in any given iteration.</p>
                         <p>This image is a simplified and imperfect representation of the predicted noise, but it&apos;s the best available given current limitations.</p>
-                        <div>
-                            <div className={`${styles.pred_noise_popup_images} w-full`}>
-                                <p className={`${styles.pred_noise_popup_label} !w-full`}>Final Predicted Noise</p>
-                            </div>
-                            <div className={`${styles.pred_noise_popup_images} w-full`}>
-                                <Image src={noise_example} alt='' className={`${styles.pred_noise_popup_image} !w-full`} />
-                            </div>
-                        </div>
+                        <Card isFooterBlurred className="flex-shrink-0" >
+                            <CardHeader className="px-4">
+                                <p className='font-bold'>Final Predicted Noise</p>
+                            </CardHeader>
+                            <CardBody>
+                                <Image src={noise_example} alt='' className='rounded-xl' />
+                            </CardBody>
+                        </Card>
                     </ModalBody>
                 </>
             )
@@ -315,6 +323,15 @@ const PopupBody = ({ node_id }: any) => {
                         </div>
                     </ModalBody>
                 </>
+            )
+        case "latents":
+        case "rgb":
+        case "pixel-1":
+        case "pixel-2":
+        case "pixel-3":
+        case "prev_pred_noise":
+            return (
+                <ModalHeader className="flex flex-col gap-1">{node_id}</ModalHeader>
             )
         default:
             return (

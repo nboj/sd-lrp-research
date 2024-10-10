@@ -14,7 +14,7 @@ type Props = Readonly<{
 const RootLayout = ({ children }: Props) => {
   return (
     <html lang="en">
-      <body>
+      <body className="dark">
         <Providers>
           <Navbar />
           {children}
