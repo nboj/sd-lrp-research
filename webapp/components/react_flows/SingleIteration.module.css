@@ -38,6 +38,12 @@
   border-radius: 12px;
 }
 
+.image_node {
+  & img {
+    border-radius: 5px;
+  }
+}
+
 .pixel_node {
   display: flex;
   justify-content: center;

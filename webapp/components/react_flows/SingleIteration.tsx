@@ -1,5 +1,5 @@
 'use client'
-import { Background, Handle, Position, ReactFlow, Controls } from "@xyflow/react"
+import { Background, Handle, Position, ReactFlow, Controls, useNodesState, useEdgesState } from "@xyflow/react"
 import styles from '@/components/react_flows/SingleIteration.module.css'
 import { memo, useCallback, useState } from "react"
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
@@ -12,7 +12,7 @@ import time_embeds_img from '@/public/single_iteration/time_embeds_visual.png';
 import sd_overview from '@/public/single_iteration/stable-diffusion-overview.png';
 import text_rel_scores from '@/public/single_iteration/text_relevance_scores.png';
 import lrp_heatmap from '@/public/single_iteration/lrp_heatmap.png';
-import AnimatedImageEdge from "./edges/AnimatedImageEdge"
+import { AnimatedImageEdge } from "@/components/react_flows/edges/AnimatedImageEdge"
 
 const Handles = memo(({ left = 'source', right = 'target', disable_left = false, disable_right = false }: any) => {
     return (
@@ -47,6 +47,14 @@ const CircleNode = memo(({ data }: any) => {
     )
 })
 CircleNode.displayName = 'CircleNode'
+const ImageNode = memo(({ data }: any) => {
+    return (
+        <div className={styles.image_node}>
+            <Image src={data.image} alt='' width={100} height={100} style={{ transform: `scale(${data.scale})` }} />
+        </div>
+    )
+})
+ImageNode.displayName = 'ImageNode'
 const SquareNode = memo(({ data }: any) => {
     return (
         <div className={styles.square_node}>
@@ -99,6 +107,7 @@ const node_types = {
     pixel: PixelNode,
     title: TitleText,
     subtitle: SubtitleText,
+    image: ImageNode,
 }
 let i = 0;
 const incXPos = (factor: number = 350) => {
@@ -126,6 +135,14 @@ const initial_nodes = [
             disable_right: true,
         },
         position: { x: incXPos(), y: 0 }
+    },
+    {
+        id: 'prev_pred_img',
+        type: 'image',
+        data: {
+            image: lrp_heatmap,
+        },
+        position: { x: 0, y: 0 },
     },
 
 
@@ -183,6 +200,15 @@ const initial_nodes = [
 
 
     {
+        id: 'text_embeds_img',
+        type: 'image',
+        data: {
+            image: text_rel_scores,
+            scale: 2,
+        },
+        position: { x: 0, y: 0 }
+    },
+    {
         id: 'text_embeds',
         type: 'square',
         data: {
@@ -209,6 +235,14 @@ const initial_nodes = [
         position: { x: incXPos(), y: 200 }
     },
     {
+        id: 'pred_noise_img',
+        type: 'image',
+        data: {
+            image: less_noise_img
+        },
+        position: { x: 0, y: 0 }
+    },
+    {
         id: 'pred_noise',
         type: 'circle',
         data: {
@@ -226,8 +260,8 @@ const initial_edges = [
         id: "e1-1",
         type: 'image',
         data: {
-            image: less_noise_img.src,
-            dur: 4,
+            node: 'pred_noise_img',
+            dur: 2000,
         },
         animated: true,
         source: "pred_noise",
@@ -237,11 +271,24 @@ const initial_edges = [
         id: "e2-1",
         type: 'image',
         data: {
-            image: text_rel_scores.src,
-            width: 300,
-            height: 300,
-            offsetY: '-100%',
-            offsetX: '-50%',
+            node: 'text_embeds_img',
+            keyframes: [
+                {
+                    offsetDistance: '0%',
+                    opacity: 1,
+                    transform: `scale(0.4)`
+                },
+                { opacity: 1, },
+                { opacity: 1, },
+                {
+                    offsetDistance: '100%',
+                    opacity: 0,
+                    transform: `scale(1)`,
+                },
+                { opacity: 0, },
+            ],
+            dur: 2000,
+            delay: 700,
         },
         animated: true,
         source: "unet",
@@ -254,11 +301,24 @@ const initial_edges = [
         animated: true,
         type: 'image',
         data: {
-            image: lrp_heatmap.src,
-            scale: 2,
-            offsetY: "20%",
-            offsetX: "-15%",
-            dur: 4,
+            node: 'prev_pred_img',
+            dur: 2000,
+            delay: 800,
+            keyframes: [
+                {
+                    offsetDistance: '0%',
+                    opacity: 1,
+                    transform: `scale(0.4)`
+                },
+                { opacity: 1, },
+                { opacity: 1, },
+                {
+                    offsetDistance: '100%',
+                    opacity: 0,
+                    transform: `scale(1)`,
+                },
+                { opacity: 0, },
+            ]
         },
         source: "rgb",
         target: 'prev_pred_noise'
@@ -368,11 +428,27 @@ const Popup = ({ isOpen, onOpenChange, children, scrollBehavior }: PopupProps) =
 Popup.displayName = 'Popup';
 
 const SingleIteration = () => {
+    const [nodes, , onNodesChange] = useNodesState(initial_nodes);
+    const [edges, , onEdgesChange] = useEdgesState(initial_edges);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [selectedId, setSelectedId] = useState<string>("")
     const handle_click = useCallback((_: any, node: any) => {
-        setSelectedId(node.id)
-        onOpen()
+        switch (node.id) {
+            case "pred_noise":
+            case "unet":
+            case "text_embeds":
+            case "time_embeds":
+            case "latents":
+            case "rgb":
+            case "pixel-1":
+            case "pixel-2":
+            case "pixel-3":
+            case "prev_pred_noise":
+                setSelectedId(node.id)
+                onOpen()
+                break;
+            default: break;
+        }
     }, [])
     return (
         <div className={styles.wrapper}>
@@ -386,8 +462,10 @@ const SingleIteration = () => {
             <ReactFlow
                 nodeTypes={node_types}
                 edgeTypes={edge_types}
-                nodes={initial_nodes}
-                edges={initial_edges}
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
                 fitView
                 nodesDraggable={false}
                 zoomOnScroll={false}
