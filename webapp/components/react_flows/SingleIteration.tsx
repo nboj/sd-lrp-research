@@ -243,7 +243,6 @@ const initial_edges = [
         source: "rgb",
         target: 'prev_pred_noise'
     },
-
     { id: "epixel-1", animated: true, source: "unet", target: 'pixel-1' },
     { id: "epixel-2", animated: true, source: "unet", target: 'pixel-2' },
     { id: "epixel-3", animated: true, source: "unet", target: 'pixel-3' },
