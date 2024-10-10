@@ -257,19 +257,19 @@ const PopupBody = ({ node_id }: any) => {
                     <ModalBody>
                         <p>This represents the output prediction from the unet model. This prediction is then used to remove noise from the input which produces a less noisy result. (this example is exaggerated)</p>
                         <div className='flex gap-2'>
-                            <Card isFooterBlurred >
+                            <Card isFooterBlurred>
                                 <CardHeader className="px-4">
                                     <p className='font-bold'>Previous Input</p>
                                 </CardHeader>
-                                <CardBody>
+                                <CardBody className="justify-end">
                                     <Image src={more_noise_img} alt='' className='rounded-xl' />
                                 </CardBody>
                             </Card>
-                            <Card isFooterBlurred >
+                            <Card isFooterBlurred>
                                 <CardHeader className="px-4">
                                     <p className='font-bold'>After Noise Removal</p>
                                 </CardHeader>
-                                <CardBody>
+                                <CardBody className="justify-end">
                                     <Image src={less_noise_img} alt='' className='rounded-xl' />
                                 </CardBody>
                             </Card>
@@ -367,7 +367,7 @@ const SingleIteration = () => {
     return (
         <div className={styles.wrapper}>
             <Popup
-                scrollBehavior={`${selectedId == "text_embeds" ? "outside" : "inside"}`}
+                scrollBehavior={'inside'}//`${selectedId == "text_embeds" ? "outside" : "inside"}`}
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
             >

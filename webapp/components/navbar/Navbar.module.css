@@ -59,16 +59,19 @@
 }
 
 .menu {
-  top: 0;
   left: -100%;
+  top: 50%;
   position: fixed;
   display: none;
   padding: 0 10px;
   width: 80%;
-  height: 100%;
+  height: 96%;
+  border-radius: 16px;
+  margin-left: 10px;
   background: var(--background);
   flex-direction: column;
   pointer-events: all;
+  transform: translateY(-50%);
 
   & .close_button {
     font-size: 30px;
@@ -82,10 +85,6 @@
   }
 
   transition: 0.1s ease-out;
-}
-
-.open_menu {
-  left: 0;
 }
 
 .small_links_container {

@@ -9,6 +9,7 @@ import { BsGridFill } from "react-icons/bs";
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import { IoClose } from "react-icons/io5";
 import { Link as LinkType } from '@/lib/types';
+import { motion } from 'framer-motion';
 
 const links = [
     {
@@ -51,13 +52,42 @@ type MenuProps = Readonly<{
     onClose: () => void;
     open: boolean;
 }>
+const variants = {
+    init: {
+        left: "-100%",
+        width: "75%",
+    },
+    open: {
+        left: "0%",
+        width: "80%",
+        transition: {
+            type: 'spring',
+            mass: .1,
+            stiffness: 500,
+            damping: 5,
+            width: {
+                type: 'spring',
+                mass: 1.5,
+                stiffness: 440,
+                damping: 20,
+                delay: 0.1,
+            }
+        }
+    }
+}
 const Menu = forwardRef(({ onClose, open }: MenuProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const handle_click = () => {
         onClose();
     }
     return (
         <div className={`${styles.menu_wrapper} ${open && styles.open_menu_wrapper}`}>
-            <div ref={ref} className={`${styles.menu} ${open && styles.open_menu}`}>
+            <motion.div
+                ref={ref}
+                className={`${styles.menu}`}
+                variants={variants}
+                initial={'init'}
+                animate={open ? 'open' : 'init'}
+            >
                 <div className={styles.menu_bar}>
                     <p className={styles.nav_title}>SD LRP</p>
                     <IoClose className={styles.close_button} onClick={handle_click} />
@@ -69,7 +99,7 @@ const Menu = forwardRef(({ onClose, open }: MenuProps, ref: React.ForwardedRef<H
                         ))
                     }
                 </ul>
-            </div>
+            </motion.div >
         </div>
     )
 })
