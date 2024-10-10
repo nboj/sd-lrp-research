@@ -55,22 +55,28 @@ type MenuProps = Readonly<{
 const variants = {
     init: {
         left: "-100%",
-        width: "75%",
+        width: "70%",
     },
     open: {
         left: "0%",
         width: "80%",
         transition: {
-            type: 'spring',
-            mass: .1,
-            stiffness: 500,
-            damping: 5,
+            type: 'inertia',
+            velocity: 105,
+            timeConstant: 30,
+            bounceDamping: 20,
+            bounceStiffness: 100,
+            power: 1,
+            max: 100,
+
             width: {
-                type: 'spring',
-                mass: 1.5,
-                stiffness: 440,
-                damping: 20,
-                delay: 0.1,
+                type: 'inertia',
+                velocity: 115,
+                timeConstant: 30,
+                bounceDamping: 10,
+                bounceStiffness: 100,
+                power: 1,
+                max: 100,
             }
         }
     }

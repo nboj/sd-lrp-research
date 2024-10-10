@@ -3,7 +3,7 @@
   flex-direction: column;
   flex-shrink: 0;
   padding: 0 10px;
-  width: 222px;
+  width: calc(222px + 3vw);
   border-right: 1px solid var(--primary);
 }
 
@@ -65,7 +65,7 @@
   display: none;
   padding: 0 10px;
   width: 80%;
-  height: 96%;
+  height: calc(100% - 20px);
   border-radius: 16px;
   margin-left: 10px;
   background: var(--background);
