@@ -268,7 +268,7 @@ const PopupBody = ({ node_id }: any) => {
                             </div>
                         </div>
                         <p>For relevance scores, either the final predicted noise from the generation or the relevance scores from the previous iteration are used as input to the LRP integration in any given iteration.</p>
-                        <p>This image is a simplified and imperfect representation of the predicted noise, but it's the best available given current limitations.</p>
+                        <p>This image is a simplified and imperfect representation of the predicted noise, but it&apos;s the best available given current limitations.</p>
                         <div>
                             <div className={`${styles.pred_noise_popup_images} w-full`}>
                                 <p className={`${styles.pred_noise_popup_label} !w-full`}>Final Predicted Noise</p>
