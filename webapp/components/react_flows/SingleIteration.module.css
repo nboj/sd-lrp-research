@@ -5,20 +5,6 @@
   border: 2px solid var(--secondary);
 }
 
-.title {
-  width: 500px;
-
-  & h1 {
-    font-size: 50px;
-  }
-}
-
-.subtitle {
-  & h2 {
-    font-size: 32px;
-  }
-}
-
 .controls {
   & button {
     background: none;

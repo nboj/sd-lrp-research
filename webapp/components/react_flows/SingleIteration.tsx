@@ -5,6 +5,10 @@ import { useCallback, useState } from "react"
 import { ModalBody, ModalHeader, useDisclosure } from "@nextui-org/react"
 import Link from 'next/link';
 import Image from 'next/image';
+import Popup from "@/components/popup/Popup";
+import { EDGE_TYPES, NODE_TYPES } from "@/lib/types"
+
+// NOTE: IMAGES
 import less_noise_img from '@/public/single_iteration/less_noise.png';
 import more_noise_img from '@/public/single_iteration/more_noise.png';
 import unet_img from '@/public/single_iteration/unet.png';
@@ -12,8 +16,7 @@ import time_embeds_img from '@/public/single_iteration/time_embeds_visual.png';
 import sd_overview from '@/public/single_iteration/stable-diffusion-overview.png';
 import text_rel_scores from '@/public/single_iteration/text_relevance_scores.png';
 import lrp_heatmap from '@/public/single_iteration/lrp_heatmap.png';
-import Popup from "@/components/popup/Popup";
-import { EDGE_TYPES, NODE_TYPES } from "@/lib/types"
+import noise_example from '@/public/single_iteration/noise_example.png';
 
 
 let i = 0;
@@ -141,8 +144,8 @@ const initial_nodes = [
         id: 'pred_noise_img',
         type: 'image',
         data: {
-            image: less_noise_img,
-            text: 'Final Result'
+            image: noise_example,
+            text: 'Final Pred Noise'
         },
         position: { x: 0, y: 0 }
     },
@@ -265,6 +268,15 @@ const PopupBody = ({ node_id }: any) => {
                             </div>
                         </div>
                         <p>For relevance scores, either the final predicted noise from the generation or the relevance scores from the previous iteration are used as input to the LRP integration in any given iteration.</p>
+                        <p>This image is a simplified and imperfect representation of the predicted noise, but it's the best available given current limitations.</p>
+                        <div>
+                            <div className={`${styles.pred_noise_popup_images} w-full`}>
+                                <p className={`${styles.pred_noise_popup_label} !w-full`}>Final Predicted Noise</p>
+                            </div>
+                            <div className={`${styles.pred_noise_popup_images} w-full`}>
+                                <Image src={noise_example} alt='' className={`${styles.pred_noise_popup_image} !w-full`} />
+                            </div>
+                        </div>
                     </ModalBody>
                 </>
             )
@@ -287,9 +299,9 @@ const PopupBody = ({ node_id }: any) => {
                     <ModalHeader className="flex flex-col gap-1">Text Embeddings</ModalHeader>
                     <ModalBody>
                         <p>The relevance scores for text embeddings are found at each cross-attention layer, for each iteration.</p>
-                        <div>
-                            <Image src={sd_overview} alt='' className={`rounded-[5px] mx-auto`} />
-                        </div>
+                        <Image src={sd_overview} alt='' className={`rounded-[5px] mx-auto`} />
+                        <p>After Each Iteration, the relevance scores are then aggregated in order to create a single representation of the current iteration.</p>
+                        <Image src={text_rel_scores} alt='' />
                     </ModalBody>
                 </>
             )
