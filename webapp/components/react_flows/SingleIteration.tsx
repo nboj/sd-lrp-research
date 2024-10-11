@@ -2,7 +2,7 @@
 import { Background, ReactFlow, Controls, useNodesState, useEdgesState } from "@xyflow/react"
 import styles from '@/components/react_flows/SingleIteration.module.css'
 import { useCallback, useState } from "react"
-import { Card, CardBody, CardFooter, CardHeader, ModalBody, ModalHeader, useDisclosure } from "@nextui-org/react"
+import { Card, CardBody, CardHeader, ModalBody, ModalHeader, useDisclosure } from "@nextui-org/react"
 import Link from 'next/link';
 import Image from 'next/image';
 import Popup from "@/components/popup/Popup";
@@ -367,13 +367,14 @@ const SingleIteration = () => {
     return (
         <div className={styles.wrapper}>
             <Popup
-                scrollBehavior={'inside'}//`${selectedId == "text_embeds" ? "outside" : "inside"}`}
+                scrollBehavior={'inside'}
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
             >
                 <PopupBody node_id={selectedId} />
             </Popup>
             <ReactFlow
+                id='flow-1'
                 nodeTypes={NODE_TYPES}
                 edgeTypes={EDGE_TYPES}
                 nodes={nodes}
@@ -388,7 +389,7 @@ const SingleIteration = () => {
                 onNodeClick={handle_click}
                 zoomOnDoubleClick={false}
             >
-                <Background />
+                <Background id="bg-1" />
                 <Controls
                     showInteractive={false}
                     showZoom={false}

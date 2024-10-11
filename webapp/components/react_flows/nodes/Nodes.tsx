@@ -53,9 +53,11 @@ const CircleNode = memo(({ data }: any) => {
     )
 })
 CircleNode.displayName = 'CircleNode'
+
 const ImageNode = memo(({ data }: any) => {
     return (
         <Card className={`dark ${styles.image_node}`} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
+            <Handles disable_left disable_right {...data} />
             <CardBody>
                 <Image src={data.image} alt='' />
             </CardBody>
@@ -70,6 +72,7 @@ const ImageNode = memo(({ data }: any) => {
     )
 })
 ImageNode.displayName = 'ImageNode'
+
 const SquareNode = memo(({ data }: any) => {
     return (
         <div className={styles.square_node}>
@@ -79,6 +82,7 @@ const SquareNode = memo(({ data }: any) => {
     )
 })
 SquareNode.displayName = 'SquareNode'
+
 const PixelNode = memo(({ data }: any) => {
     return (
         <div className={styles.pixel_node} style={{ background: data.color }}>
@@ -88,6 +92,7 @@ const PixelNode = memo(({ data }: any) => {
     )
 })
 PixelNode.displayName = 'PixelNode'
+
 const RGBNode = memo(({ data }: any) => {
     return (
         <div className={styles.rgb_node}>
@@ -96,6 +101,7 @@ const RGBNode = memo(({ data }: any) => {
     )
 })
 RGBNode.displayName = 'RGBNode'
+
 const TitleText = memo(({ data }: any) => {
     return (
         <div className={styles.title}>
@@ -105,6 +111,7 @@ const TitleText = memo(({ data }: any) => {
     )
 })
 TitleText.displayName = 'TitleText'
+
 const SubtitleText = memo(({ data }: any) => {
     return (
         <div className={styles.subtitle}>
@@ -115,4 +122,14 @@ const SubtitleText = memo(({ data }: any) => {
 })
 SubtitleText.displayName = 'SubtitleText'
 
-export { CircleNode, SquareNode, ImageNode, PixelNode, RGBNode, TitleText, SubtitleText };
+const Dots = memo(({ data }: any) => {
+    return (
+        <div className={styles.dots}>
+            <h1>&bull;&bull;&bull;</h1>
+            <Handles {...data} />
+        </div>
+    )
+})
+Dots.displayName = "Dots"
+
+export { CircleNode, SquareNode, ImageNode, PixelNode, RGBNode, TitleText, SubtitleText, Dots };

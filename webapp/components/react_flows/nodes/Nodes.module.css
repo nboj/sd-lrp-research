@@ -2,7 +2,7 @@
   width: 260px;
   text-align: center;
   background-color: var(--primary);
-  border-radius: 12px;
+  border-radius: var(--node_br);
   padding: 10px;
   border: 2px solid var(--secondary);
 }
@@ -28,7 +28,7 @@
   background: var(--primary);
   border: 2px solid var(--secondary);
   padding: 10px;
-  border-radius: 12px;
+  border-radius: var(--node_br);
 }
 
 .image_node {
@@ -67,5 +67,21 @@
 .subtitle {
   & h2 {
     font-size: 32px;
+  }
+}
+
+.dots {
+  display: flex;
+  background: var(--primary);
+  border: 2px solid var(--secondary);
+  border-radius: var(--node_br);
+  width: 100px;
+  height: 100px;
+  justify-content: center;
+  align-items: center;
+
+  & h1 {
+    font-size: 50px;
+    color: color-mix(in srgb, var(--secondary) 60%, white 40%);
   }
 }
