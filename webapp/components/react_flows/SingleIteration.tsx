@@ -275,7 +275,7 @@ const PopupBody = ({ node_id }: any) => {
                             </Card>
                         </div>
                         <p>For relevance scores, either the final predicted noise from the generation or the relevance scores from the previous iteration are used as input to the LRP integration in any given iteration.</p>
-                        <p>This image is a simplified and imperfect representation of the predicted noise, but it&apos;s the best available given current limitations.</p>
+                        <p>(This image is a simplified and imperfect representation of the predicted noise)</p>
                         <Card isFooterBlurred className="flex-shrink-0" >
                             <CardHeader className="px-4">
                                 <p className='font-bold'>Final Predicted Noise</p>
