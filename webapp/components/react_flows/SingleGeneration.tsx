@@ -2,9 +2,7 @@
 import { Background, ReactFlow, Controls, useNodesState, useEdgesState } from "@xyflow/react";
 import styles from '@/components/react_flows/SingleGeneration.module.css';
 import { useCallback, useState } from "react";
-import { Card, CardBody, CardHeader, ModalBody, ModalHeader, useDisclosure } from "@nextui-org/react";
-import Link from 'next/link';
-import Image from 'next/image';
+import { ModalHeader, useDisclosure } from "@nextui-org/react";
 import Popup from "@/components/popup/Popup";
 import { EDGE_TYPES, NODE_TYPES } from "@/lib/types";
 
@@ -30,9 +28,7 @@ const sortList = (list: any) => {
         return numB - numA;
     });
 }
-// @ts-ignore
 const lrps = importAll(require.context('@/public/single_generation/lrp_test_results', false, /\.(png|jpe?g|svg)$/));
-// @ts-ignore
 const noises = importAll(require.context('@/public/single_generation/noise_test_results', false, /\.(png|jpe?g|svg)$/));
 const lrp_frames = lrps.map((image: any) => image.default.src)
 const noise_frames = noises.map((image: any) => image.default.src)

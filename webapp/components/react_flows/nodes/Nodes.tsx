@@ -146,7 +146,7 @@ const ImageAnimation = memo(({ data }: any) => {
 
         if (ctxs.some(ctx => !ctx)) return; // Exit if any context is null
 
-        let image_lists: HTMLImageElement[][] = Array.from({ length: data.frames.length }, () => []);
+        const image_lists: HTMLImageElement[][] = Array.from({ length: data.frames.length }, () => []);
         data.frames.forEach((list: any, idx: number) => {
             return list.forEach((src: any, _: number) => {
                 const img = new Image();
