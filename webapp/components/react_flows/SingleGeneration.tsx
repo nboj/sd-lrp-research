@@ -10,19 +10,47 @@ import { EDGE_TYPES, NODE_TYPES } from "@/lib/types";
 
 // NOTE: IMAGES
 import single_iteration_img from '@/public/single_generation/single_iteration.png';
+import noise_example from '@/public/single_generation/noise_example.png';
+import lrp1 from '@/public/single_generation/lrp1.png';
+import lrp2 from '@/public/single_generation/lrp2.png';
+import lrp3 from '@/public/single_generation/lrp3.png';
+import lrp4 from '@/public/single_generation/lrp4.png';
+import lrp5 from '@/public/single_generation/lrp5.png';
+import text_embeds_lrp from '@/public/single_generation/text_relevance_scores.png';
+
+const importAll = (requireContext: any) => {
+    return requireContext.keys().map(requireContext);
+};
+
+const sortList = (list: any) => {
+    list.sort((a: any, b: any) => {
+        // Extract the numbers after "lrp1-" and before the next period (.)
+        const numA = parseInt(a.match(/-(\d+)/)[1], 10);
+        const numB = parseInt(b.match(/-(\d+)/)[1], 10);
+        return numB - numA;
+    });
+}
+// @ts-ignore
+const lrps = importAll(require.context('@/public/single_generation/lrp_test_results', false, /\.(png|jpe?g|svg)$/));
+// @ts-ignore
+const noises = importAll(require.context('@/public/single_generation/noise_test_results', false, /\.(png|jpe?g|svg)$/));
+const lrp_frames = lrps.map((image: any) => image.default.src)
+const noise_frames = noises.map((image: any) => image.default.src)
+sortList(lrp_frames)
+sortList(noise_frames)
 
 const getId = (id: string) => {
     return `single_gen_${id}`;
 }
 
-let i = 0;
+let x = 0;
 const incXPos = (factor: number = 250) => {
-    return ++i * factor;
+    return x += factor;
 }
-const getXPos = (factor: number = 200) => {
-    return i * factor;
+const getXPos = () => {
+    return x;
 }
-const getIteration = (id: string, image: any, text: string, x: number = 0, y: number = 0, ...props: any) => {
+const getIteration = (id: string, image: any, text: string, x: number = incXPos(), y: number = 0, ...props: any) => {
     return {
         id: id,
         type: 'image',
@@ -33,11 +61,122 @@ const getIteration = (id: string, image: any, text: string, x: number = 0, y: nu
             disable_left: false,
             disable_right: false,
         },
-        position: { x: incXPos() + x, y: y },
+        position: { x: x, y: y },
         ...props
     }
 }
+let kf = 5;
+const getDur = () => {
+    return 5000;
+}
+const getKeyframes = () => {
+    const delay = kf;
+    return [
+        ...Array.from({ length: 7 - delay }).map(() => ({ opacity: 0 })),
+        ...Array.from({ length: 7 - delay }).map(() => ({ opacity: 0 })),
+        ...Array.from({ length: 7 - delay }).map(() => ({ opacity: 0 })),
+        ...Array.from({ length: 7 - delay }).map(() => ({ opacity: 0 })),
+        {
+            offsetDistance: '0%',
+            opacity: 1,
+            transform: `scale(1)`
+        },
+        { opacity: 1, },
+        { opacity: 1, },
+        {
+            offsetDistance: '100%',
+            opacity: 0,
+            transform: `scale(0.4)`,
+        },
+        ...Array.from({ length: delay }).map(() => ({ opacity: 0 })),
+        ...Array.from({ length: delay }).map(() => ({ opacity: 0 })),
+        ...Array.from({ length: delay }).map(() => ({ opacity: 0 })),
+        ...Array.from({ length: delay }).map(() => ({ opacity: 0 })),
+    ]
+}
+const incKeyframes = () => {
+    const keyframes = getKeyframes();
+    kf--;
+    return keyframes;
+}
+const edge_nodes = [
+    {
+        id: getId("final_pred_noise_edge_6"),
+        type: 'image',
+        data: {
+            image: noise_example,
+        },
+        position: { x: 0, y: 0 }
+    },
+    {
+        id: getId("final_pred_noise_edge_5"),
+        type: 'image',
+        data: {
+            image: lrp1,
+        },
+        position: { x: 0, y: 0 }
+    },
+    {
+        id: getId("final_pred_noise_edge_4"),
+        type: 'image',
+        data: {
+            image: lrp2,
+        },
+        position: { x: 0, y: 0 }
+    },
+    {
+        id: getId("final_pred_noise_edge_3"),
+        type: 'image',
+        data: {
+            image: lrp3,
+        },
+        position: { x: 0, y: 0 }
+    },
+    {
+        id: getId("final_pred_noise_edge_2"),
+        type: 'image',
+        data: {
+            image: lrp4,
+        },
+        position: { x: 0, y: 0 }
+    },
+    {
+        id: getId("final_pred_noise_edge_1"),
+        type: 'image',
+        data: {
+            image: lrp5,
+        },
+        position: { x: 0, y: 0 }
+    },
+    {
+        id: getId("final_pred_noise_edge_0"),
+        type: 'image',
+        data: {
+            image: text_embeds_lrp,
+            width: 300,
+        },
+        position: { x: 0, y: 0 }
+    },
+]
 const initial_nodes = [
+    {
+        id: getId('text_embeds'),
+        type: 'square',
+        data: {
+            name: "Text Embeddings Relevance Scores",
+            disable_left: true,
+        },
+        position: { x: getXPos(), y: -250 }
+    },
+    {
+        id: getId('time_embeds'),
+        type: 'square',
+        data: {
+            name: "Time Embeddings Relevance Scores",
+            disable_left: true,
+        },
+        position: { x: getXPos(), y: 375 }
+    },
     {
         id: getId('latents'),
         type: 'square',
@@ -46,15 +185,16 @@ const initial_nodes = [
             disable_left: true,
             disable_right: true,
         },
-        position: { x: incXPos(), y: 0 }
+        position: { x: getXPos(), y: -150 }
     },
     {
         id: getId('rgb'),
         type: 'rgb',
         data: {
-            disable_right: true,
+            disable_right: false,
+            disable_left: true,
         },
-        position: { x: getXPos() + 30, y: 100 }
+        position: { x: getXPos() + 30, y: -50 }
     },
     {
         id: getId('pixel-1'),
@@ -63,6 +203,7 @@ const initial_nodes = [
             color: '#4D527D',
             name: "B",
             disable_left: true,
+            disable_right: true,
         },
         position: { x: 60, y: 280 },
         parentId: getId('rgb'),
@@ -73,6 +214,7 @@ const initial_nodes = [
         data: {
             color: '#4D7D5B',
             name: "G",
+            disable_right: true,
             disable_left: true,
         },
         position: { x: 60, y: 160 },
@@ -84,17 +226,42 @@ const initial_nodes = [
         data: {
             color: '#7D4D4D',
             name: "R",
+            disable_right: true,
             disable_left: true,
         },
         position: { x: 60, y: 40 },
         parentId: getId('rgb'),
     },
-    getIteration(getId('iter_0'), single_iteration_img, 'Iteration 0'),
+    getIteration(getId('iter_0'), single_iteration_img, 'Iteration 0', incXPos(400)),
     getIteration(getId('iter_1'), single_iteration_img, 'Iteration 1'),
     {
         id: getId('dots'),
         type: 'dots',
         position: { x: incXPos() + 50, y: 0 },
+    },
+    {
+        id: getId('title'),
+        type: 'title',
+        position: { x: getXPos() - 150, y: -200 },
+        data: {
+            name: 'For a single generation',
+        },
+    },
+    {
+        id: getId('lrp_timeline'),
+        type: 'animated_image',
+        data: {
+            frames: [lrp_frames, noise_frames]
+        },
+        position: { x: getXPos() - 125, y: 200 }
+    },
+    {
+        id: getId('subtitle'),
+        type: 'subtitle',
+        position: { x: getXPos(), y: -130 },
+        data: {
+            name: '50 iterations',
+        },
     },
     getIteration(getId('iter_49'), single_iteration_img, 'Iteration 49'),
     getIteration(getId('iter_50'), single_iteration_img, 'Iteration 50'),
@@ -107,6 +274,7 @@ const initial_nodes = [
         },
         position: { x: incXPos(), y: 0 },
     },
+    ...edge_nodes,
 ]
 
 const initial_edges = [
@@ -115,29 +283,96 @@ const initial_edges = [
         source: getId('final_pred_noise'),
         target: getId('iter_50'),
         animated: true,
+        type: 'image',
+        data: {
+            node: getId('final_pred_noise_edge_6'),
+            keyframes: incKeyframes(),
+            dur: getDur(),
+            easing: 'linear',
+        },
     },
     {
         id: getId("iter_49 <- iter_50"),
         source: getId('iter_50'),
         target: getId('iter_49'),
         animated: true,
+        type: 'image',
+        data: {
+            node: getId('final_pred_noise_edge_5'),
+            keyframes: incKeyframes(),
+            dur: getDur(),
+            easing: 'linear',
+        },
     },
     {
         id: getId('dots <- iter_49'),
         source: getId('iter_49'),
         target: getId('dots'),
         animated: true,
+        type: 'image',
+        data: {
+            node: getId('final_pred_noise_edge_4'),
+            keyframes: incKeyframes(),
+            dur: getDur(),
+            easing: 'linear',
+        },
     },
     {
         id: getId('iter_1 <- dots'),
         source: getId('dots'),
         target: getId('iter_1'),
         animated: true,
+        type: 'image',
+        data: {
+            node: getId('final_pred_noise_edge_3'),
+            keyframes: incKeyframes(),
+            dur: getDur(),
+            easing: 'linear',
+        },
     },
     {
         id: getId('iter_0 <- iter_1'),
         source: getId('iter_1'),
         target: getId('iter_0'),
+        animated: true,
+        type: 'image',
+        data: {
+            node: getId('final_pred_noise_edge_2'),
+            keyframes: incKeyframes(),
+            dur: getDur(),
+            easing: 'linear',
+        },
+    },
+    {
+        id: getId('time_embeds <- iter_0'),
+        source: getId('iter_0'),
+        target: getId('time_embeds'),
+        animated: true,
+    },
+    {
+        id: getId('rgb <- iter_0'),
+        source: getId('iter_0'),
+        target: getId('rgb'),
+        type: 'image',
+        data: {
+            node: getId('final_pred_noise_edge_1'),
+            keyframes: incKeyframes(),
+            dur: getDur(),
+            easing: 'linear',
+        },
+        animated: true,
+    },
+    {
+        id: getId('text_embeds <- iter_0'),
+        source: getId('iter_0'),
+        target: getId('text_embeds'),
+        type: 'image',
+        data: {
+            node: getId('final_pred_noise_edge_0'),
+            keyframes: getKeyframes(),
+            dur: getDur(),
+            easing: 'linear',
+        },
         animated: true,
     }
 

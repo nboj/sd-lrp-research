@@ -1,8 +1,8 @@
 import { Handle, Position } from "@xyflow/react";
-import { memo } from "react";
-import Image from 'next/image';
+import { memo, useEffect, useRef, useState } from "react";
+import NextImage from 'next/image';
 import styles from '@/components/react_flows/nodes/Nodes.module.css';
-import { Card, CardBody, CardFooter } from "@nextui-org/react";
+import { Card, CardBody, CardFooter, Progress } from "@nextui-org/react";
 
 const Handles = memo(({ left = 'source', right = 'target', top = 'target', bottom = 'source', disable_left = false, disable_right = false, disable_top = true, disable_bottom = true }: any) => {
     return (
@@ -59,7 +59,7 @@ const ImageNode = memo(({ data }: any) => {
         <Card className={`dark ${styles.image_node}`} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
             <Handles disable_left disable_right {...data} />
             <CardBody>
-                <Image src={data.image} alt='' />
+                <NextImage src={data.image} alt='' />
             </CardBody>
             {
                 data?.text && (
@@ -132,4 +132,107 @@ const Dots = memo(({ data }: any) => {
 })
 Dots.displayName = "Dots"
 
-export { CircleNode, SquareNode, ImageNode, PixelNode, RGBNode, TitleText, SubtitleText, Dots };
+const ImageAnimation = memo(({ data }: any) => {
+    const frameIndex = useRef(0);
+    const animationRef = useRef<number | null>(null);
+    const lastFrameTimeRef = useRef(0);
+    const fps = 15; // Desired frames per second
+    const frameInterval = 1000 / fps;
+    const [progress, setProgress] = useState<number>(0)
+
+    useEffect(() => {
+        const canvases = document.querySelectorAll('.anim-canv');
+        const ctxs = Array.from(canvases).map((canv: any) => canv.getContext('2d'));
+
+        if (ctxs.some(ctx => !ctx)) return; // Exit if any context is null
+
+        let image_lists: HTMLImageElement[][] = Array.from({ length: data.frames.length }, () => []);
+        data.frames.forEach((list: any, idx: number) => {
+            return list.forEach((src: any, _: number) => {
+                const img = new Image();
+                img.src = src;
+                image_lists[idx].push(img);
+            })
+        });
+
+        const renderFrame = (timestamp: number) => {
+            let allImagesLoaded = true;
+
+            // Render each frame list to its corresponding canvas
+            image_lists.forEach((images, idx: number) => {
+                const ctx = ctxs[idx];
+                if (!ctx) return;
+                // Check if the image is fully loaded before rendering
+                if (!images[frameIndex.current]?.complete) {
+                    allImagesLoaded = false;
+                    return;
+                }
+
+                if (timestamp - lastFrameTimeRef.current < frameInterval) {
+                    return;
+                }
+
+                const img = images[frameIndex.current];
+                const { width: imgWidth, height: imgHeight } = img;
+                const { clientWidth: canvasWidth, clientHeight: canvasHeight } = canvases[idx];
+
+                const imgAspectRatio = imgWidth / imgHeight;
+                const canvasAspectRatio = canvasWidth / canvasHeight;
+
+                let sourceX = 0, sourceY = 0, sourceWidth = imgWidth, sourceHeight = imgHeight;
+
+                if (imgAspectRatio > canvasAspectRatio) {
+                    // Image is wider than canvas
+                    sourceWidth = imgHeight * canvasAspectRatio;
+                    sourceX = (imgWidth - sourceWidth) / 2; // Center horizontally
+                } else {
+                    // Image is taller than canvas
+                    sourceHeight = imgWidth / canvasAspectRatio;
+                    sourceY = (imgHeight - sourceHeight) / 2; // Center vertically
+                }
+
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                ctx.drawImage(
+                    img,
+                    sourceX, sourceY, sourceWidth, sourceHeight,
+                    0, 0, canvasWidth, canvasHeight
+                );
+            });
+
+            if (allImagesLoaded) {
+                setProgress(100 - ((frameIndex.current + 1) / image_lists[0].length) * 100);
+            }
+            if (timestamp - lastFrameTimeRef.current > frameInterval) {
+                frameIndex.current = (frameIndex.current + 1) % image_lists[0].length;
+                lastFrameTimeRef.current = timestamp;
+            }
+            animationRef.current = requestAnimationFrame(renderFrame);
+        };
+
+        // Start the animation loop
+        animationRef.current = requestAnimationFrame(renderFrame);
+
+        return () => {
+            if (animationRef.current !== null) {
+                cancelAnimationFrame(animationRef.current);
+            }
+        };
+    }, [data.frames]);
+    return (
+        <Card className="dark">
+            <CardBody className="flex flex-row gap-2">
+                {
+                    data.frames.map((_: any, idx: number) => (
+                        <canvas className='anim-canv' key={`canv-${idx}`} width={200} height={200} style={{ borderRadius: "12px" }} />
+                    ))
+                }
+            </CardBody>
+            <CardFooter>
+                <Progress value={progress} disableAnimation aria-label="pgs" />
+            </CardFooter>
+        </Card>
+    )
+})
+ImageAnimation.displayName = "ImageAnimation";
+
+export { CircleNode, SquareNode, ImageNode, PixelNode, RGBNode, TitleText, SubtitleText, Dots, ImageAnimation };

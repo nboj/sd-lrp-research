@@ -1,5 +1,5 @@
 import { AnimatedImageEdge } from "@/components/react_flows/edges/AnimatedImageEdge";
-import { CircleNode, Dots, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
+import { CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
 
 export type Generation = {
   id: number;
@@ -54,4 +54,5 @@ export const NODE_TYPES = {
   subtitle: SubtitleText,
   image: ImageNode,
   dots: Dots,
+  animated_image: ImageAnimation,
 }

@@ -7,10 +7,11 @@ export type AnimatedImageEdge = Edge<{
     dur: number,
     keyframes: any[],
     delay: number,
+    easing: string,
 }, 'animatedImage'>;
 const default_data = {
     node: '',
-    dur: 2,
+    dur: 2000,
     keyframes: [
         {
             offsetDistance: '0%',
@@ -26,6 +27,7 @@ const default_data = {
         }
     ],
     delay: 0,
+    easing: 'ease-out',
 }
 export const AnimatedImageEdge = ({
     id,
@@ -47,7 +49,7 @@ export const AnimatedImageEdge = ({
         targetPosition,
     });
     const {
-        node, dur, keyframes, delay
+        node, dur, keyframes, delay, easing,
     } = { ...default_data, ...data }
     const selector = useMemo(() => `.react-flow__node[data-id="${node}"]`, [node])
     useEffect(() => {
@@ -74,7 +76,7 @@ export const AnimatedImageEdge = ({
             duration: dur,
             direction: 'normal',
             iterations: Infinity,
-            easing: 'ease-out',
+            easing: easing,
             delay: delay,
         });
 
