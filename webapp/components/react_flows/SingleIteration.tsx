@@ -319,7 +319,7 @@ const PopupBody = ({ node_id }: any) => {
                     <ModalBody>
                         <p>Time Embeddings are the result of a couple of Linear/Conv2D layers, which transforms the timestamp into a meaningful representation for the <Link className={`text-blue-500`} href='/unet'>Unet</Link> model.</p>
                         <div>
-                            <Image src={time_embeds_img} alt='' className={`rounded-[5px]`} />
+                            <Image src={time_embeds_img} alt='' className={`rounded-[5px] mx-auto`} />
                         </div>
                     </ModalBody>
                 </>
@@ -329,6 +329,17 @@ const PopupBody = ({ node_id }: any) => {
         case "pixel-1":
         case "pixel-2":
         case "pixel-3":
+            return (
+                <>
+                    <ModalHeader className="flex flex-col gap-1">Input Latents</ModalHeader>
+                    <ModalBody>
+                        <p>The inpput latents are the latent representation of the RGB image input. The relevance scores are also in this latent representation, which need to be converted back to pixel representation before generating the LRP heatmap.</p>
+                        <div>
+                            <Image src={lrp_heatmap} alt='' className={'rounded-[5px] mx-auto'} />
+                        </div>
+                    </ModalBody>
+                </>
+            )
         case "prev_pred_noise":
             return (
                 <ModalHeader className="flex flex-col gap-1">{node_id}</ModalHeader>
