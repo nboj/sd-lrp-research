@@ -69,4 +69,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'sd-lrp-research'
+          slot-name: 'Production'
           package: .
