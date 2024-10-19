@@ -16,15 +16,16 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    cd webapp
     npm install
     npm run build
   displayName: 'npm install and build'
 
 - task: CopyFiles@2
   inputs:
-    sourceFolder: '$(Build.SourcesDirectory)'
+    sourceFolder: '$(Build.SourcesDirectory)/webapp'
     contents: |
-       webapp/*
+       **/*
     targetFolder: '$(Build.ArtifactStagingDirectory)'
   displayName: 'Copy project files'
 
