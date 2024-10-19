@@ -24,8 +24,7 @@ steps:
   inputs:
     sourceFolder: '$(Build.SourcesDirectory)'
     contents: |
-       src/*
-       public/*
+       webapp/*
     targetFolder: '$(Build.ArtifactStagingDirectory)'
   displayName: 'Copy project files'
 
