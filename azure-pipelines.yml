@@ -31,4 +31,6 @@ steps:
     appType: 'webAppLinux'
     appName: 'sd-lrp-research'
     package: './webapp'
-    startUpCommand: npm run start
+    startUpCommand: |
+      npm install next
+      npm run start
