@@ -24,7 +24,18 @@ steps:
     npm run build
   displayName: 'Building'
   workingDirectory: './webapp'
-
+# Clean up existing files in the Azure Web App
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'sd-webapp-service-connection'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az webapp delete --name sd-lrp-research --resource-group your-resource-group-name --subscription your-subscription-id
+      az webapp create --name sd-lrp-research --resource-group your-resource-group-name --plan your-service-plan-name --runtime "NODE|18-lts" # Recreate the app
+    addSpnToEnvironment: true
+  displayName: 'Delete existing files in Azure Web App'
+  
 - task: AzureWebApp@1
   inputs:
     azureSubscription: 'sd-webapp-service-connection'
