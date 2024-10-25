@@ -342,7 +342,30 @@ const PopupBody = ({ node_id }: any) => {
             )
         case "prev_pred_noise":
             return (
-                <ModalHeader className="flex flex-col gap-1">{node_id}</ModalHeader>
+                <>
+                    <ModalHeader className="flex flex-col gap-1">Previous Predicted Noise</ModalHeader>
+                    <ModalBody>
+                        <p>The previous predicted noise is the input into the unet. So in terms of LRP, the heatmap represents the relevance scores for the input image which can either be the removed noise image, or the initial random noise at the start of the generation.</p>
+                        <div className='flex gap-2'>
+                            <Card isFooterBlurred>
+                                <CardHeader className="px-4">
+                                    <p className='font-bold'>Input Image</p>
+                                </CardHeader>
+                                <CardBody className="justify-end">
+                                    <Image src={more_noise_img} alt='' className='rounded-xl' />
+                                </CardBody>
+                            </Card>
+                            <Card isFooterBlurred>
+                                <CardHeader className="px-4">
+                                    <p className='font-bold'>Heatmap for Input</p>
+                                </CardHeader>
+                                <CardBody className="justify-end">
+                                    <Image src={lrp_heatmap} alt='' className='rounded-xl' />
+                                </CardBody>
+                            </Card>
+                        </div>
+                    </ModalBody>
+                </>
             )
         default:
             return (
