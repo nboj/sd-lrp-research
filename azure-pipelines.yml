@@ -33,3 +33,4 @@ steps:
     package: '$(System.DefaultWorkingDirectory)/webapp'
     startUpCommand: 'npm run start'
     runtimeStack: 'NODE|18-lts'
+    deploymentMethod: 'runFromPackage'
