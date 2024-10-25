@@ -32,7 +32,7 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       az webapp delete --name sd-lrp-research --resource-group DefaultResourceGroup-EUS --subscription b50e3a47-7894-4fe6-8b06-563d0363af47
-      az webapp create --name sd-lrp-research --resource-group DefaultResourceGroup-EUS --plan 'ASP-DefaultResourceGroupEUS-8364 (F1: 1)' --runtime "NODE|18-lts" # Recreate the app
+      az webapp create --name sd-lrp-research --resource-group DefaultResourceGroup-EUS --plan ASP-DefaultResourceGroupEUS-8364 --runtime "NODE|18-lts" # Recreate the app
     addSpnToEnvironment: true
   displayName: 'Delete existing files in Azure Web App'
   
