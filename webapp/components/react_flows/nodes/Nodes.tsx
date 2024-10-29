@@ -1,3 +1,4 @@
+'use client'
 import { Handle, Position } from "@xyflow/react";
 import { memo, useEffect, useRef, useState } from "react";
 import NextImage from 'next/image';

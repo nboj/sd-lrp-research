@@ -6,7 +6,7 @@ import { RiHammerFill } from "react-icons/ri";
 import { BsClipboard2PulseFill } from "react-icons/bs";
 import { usePathname } from 'next/navigation';
 import { BsGridFill } from "react-icons/bs";
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { IoClose } from "react-icons/io5";
 import { Link as LinkType } from '@/lib/types';
 import { motion } from 'framer-motion';
@@ -35,12 +35,17 @@ type LinkProps = Readonly<{
 }>
 const Navlink = ({ link, onClick }: LinkProps) => {
     const pathname = usePathname();
+    const active = useMemo(() => {
+        if (pathname === link.href) return true
+        else if (link.href !== '/' && pathname.startsWith(link.href)) return true
+        return false
+    }, [pathname])
     const handle_click = (_: React.MouseEvent) => {
         onClick();
     }
     return (
         <li>
-            <Link className={`${styles.link} ${pathname == link.href && styles.active}`} href={link.href} onClick={handle_click}>
+            <Link className={`${styles.link} ${active && styles.active}`} href={link.href} onClick={handle_click}>
                 {link.icon}{link.name}
             </Link>
         </li>

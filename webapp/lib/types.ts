@@ -3,7 +3,9 @@ import { CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, Square
 
 export type Generation = {
   id: number;
-  prompt: string;
+  prompt: string[];
+  display_image?: Asset;
+  display_text?: Asset;
 }
 
 export type Iteration = {
@@ -17,12 +19,14 @@ export type Asset = {
   iteration_id: number;
   pathname: string;
   asset_type: AssetType;
+  text_relevance: any;
 }
 
 export enum AssetType {
   NOISE = 'noise',
-  LRP1 = 'lrp1',
-  LRP2 = 'lrp2'
+  NOISE_PRED = 'noise_pred',
+  NOISE_LRP = 'noise_lrp',
+  TEXT_SCORES = 'text_scores',
 }
 
 export type FullGeneration = {

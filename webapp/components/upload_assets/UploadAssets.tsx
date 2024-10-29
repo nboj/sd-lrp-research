@@ -20,7 +20,7 @@ const Collection = ({ label }: Props) => {
     };
     return (
         <div>
-            <label htmlFor={`${label}`}>Choose images to upload</label>
+            <label htmlFor={`${label}`}>Choose {label} images to upload</label>
             <input type='file' name={`${label}`} onChange={handleNoiseFileChange} multiple />
             <div className='flex w-full flex-wrap'>
                 {
@@ -53,8 +53,9 @@ const UploadAssets = () => {
             <label htmlFor='prompt'>Enter the prompt used:</label>
             <input type='text' name='prompt' />
             <Collection label='noise' />
-            <Collection label='lrp1' />
-            <Collection label='lrp2' />
+            <Collection label='noise_pred' />
+            <Collection label='lrp_noise' />
+            <Collection label='lrp_text' />
             <UploadButton />
             {
                 state?.error?.message && (
