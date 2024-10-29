@@ -14,8 +14,8 @@ const getPriority = (item: Asset) => {
 }
 const sortAssets = (assets: Asset[]) => {
     return assets.sort((a: Asset, b: Asset) => {
-        let priorityA = getPriority(a);
-        let priorityB = getPriority(b);
+        const priorityA = getPriority(a);
+        const priorityB = getPriority(b);
         return priorityB - priorityA;
     })
 }
