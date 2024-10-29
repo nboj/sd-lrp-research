@@ -1,4 +1,4 @@
-import GenerationServer from "@/components/generation/generation_server/GenerationServer";
+import GenerationServer from "@/components/generation/generation/GenerationServer";
 
 type Props = Readonly<{
   params: {

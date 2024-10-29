@@ -1,9 +1,9 @@
 'use client'
 import { Asset, AssetType, FullGeneration, FullIteration } from "@/lib/types";
-import LRPText from '@/components/generation/LRPText'
+import LRPText from '@/components/lrp_text/LRPText'
 import Image from "next/image";
 import { strToArray } from "@/lib/utils";
-import styles from '@/components/generation/generation_server/Generation.module.css'
+import styles from '@/components/generation/generation/Generation.module.css'
 const getPriority = (item: Asset) => {
     switch (item.asset_type) {
         case AssetType.NOISE: return 1

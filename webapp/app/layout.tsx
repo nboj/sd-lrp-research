@@ -4,7 +4,10 @@ import Navbar from "@/components/navbar/Navbar";
 import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "SD LRP",
+  title: {
+    default: "SD LRP",
+    template: "%s - SD LRP"
+  },
   description: "Stable Diffusion and LRP",
 };
 

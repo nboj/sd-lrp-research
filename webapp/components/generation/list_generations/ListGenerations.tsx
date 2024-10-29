@@ -4,7 +4,7 @@ import { Generation } from "@/lib/types"
 import Link from "next/link"
 import styles from '@/components/generation/list_generations/ListGenerations.module.css'
 import Image from "next/image"
-import LRPText from "../LRPText"
+import LRPText from "@/components/lrp_text/LRPText"
 import { strToArray } from "@/lib/utils"
 
 type Props = Readonly<{

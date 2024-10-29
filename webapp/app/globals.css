@@ -4,8 +4,8 @@
 @import '@xyflow/react/dist/style.css';
 
 :root {
-  --background: #0F0F0F;
-  --foreground: #F1F1F1;
+  --background: #151515;
+  --foreground: #DCDCDC;
   --primary: #272727;
   --secondary: #4B4B4B;
   --node_br: 12px;

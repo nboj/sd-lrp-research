@@ -31,6 +31,14 @@
   border-radius: var(--node_br);
 }
 
+.node {
+  transition: 0.1s ease-in-out;
+}
+
+.node:hover {
+  background: var(--secondary) !important;
+}
+
 .image_node {
   display: flex;
   flex-direction: column;

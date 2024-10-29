@@ -1,5 +1,5 @@
 import { get_full_generation } from "@/actions/generation_actions"
-import Generation from "@/components/generation/generation_server/Generation"
+import Generation from "@/components/generation/generation/Generation"
 import { FullGeneration } from "@/lib/types";
 
 type Props = Readonly<{

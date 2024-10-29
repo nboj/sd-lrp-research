@@ -47,7 +47,7 @@ Handles.displayName = 'Handles'
 
 const CircleNode = memo(({ data }: any) => {
     return (
-        <div className={styles.circle_node}>
+        <div className={`${styles.node} ${styles.circle_node}`}>
             <Handles {...data} />
             <h2>{data.name}</h2>
         </div>
@@ -57,7 +57,7 @@ CircleNode.displayName = 'CircleNode'
 
 const ImageNode = memo(({ data }: any) => {
     return (
-        <Card className={`dark ${styles.image_node}`} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
+        <Card className={`${styles.node} dark ${styles.image_node}`} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
             <Handles disable_left disable_right {...data} />
             <CardBody>
                 <NextImage src={data.image} alt='' />
@@ -76,7 +76,7 @@ ImageNode.displayName = 'ImageNode'
 
 const SquareNode = memo(({ data }: any) => {
     return (
-        <div className={styles.square_node}>
+        <div className={`${styles.node} ${styles.square_node}`}>
             <h2>{data.name}</h2>
             <Handles {...data} />
         </div>
@@ -86,7 +86,7 @@ SquareNode.displayName = 'SquareNode'
 
 const PixelNode = memo(({ data }: any) => {
     return (
-        <div className={styles.pixel_node} style={{ background: data.color }}>
+        <div className={`${styles.node} ${styles.pixel_node}`} style={{ background: data.color }}>
             {data.name}
             <Handles {...data} />
         </div>
@@ -96,7 +96,7 @@ PixelNode.displayName = 'PixelNode'
 
 const RGBNode = memo(({ data }: any) => {
     return (
-        <div className={styles.rgb_node}>
+        <div className={`${styles.rgb_node}`}>
             <Handles {...data} />
         </div>
     )
@@ -105,7 +105,7 @@ RGBNode.displayName = 'RGBNode'
 
 const TitleText = memo(({ data }: any) => {
     return (
-        <div className={styles.title}>
+        <div className={`${styles.title}`}>
             <h1>{data.name}</h1>
             <Handles disable_left disable_right />
         </div>
@@ -115,7 +115,7 @@ TitleText.displayName = 'TitleText'
 
 const SubtitleText = memo(({ data }: any) => {
     return (
-        <div className={styles.subtitle}>
+        <div className={`${styles.subtitle}`}>
             <h2>{data.name}</h2>
             <Handles disable_left disable_right />
         </div>
@@ -125,7 +125,7 @@ SubtitleText.displayName = 'SubtitleText'
 
 const Dots = memo(({ data }: any) => {
     return (
-        <div className={styles.dots}>
+        <div className={`${styles.dots}`}>
             <h1>&bull;&bull;&bull;</h1>
             <Handles {...data} />
         </div>
@@ -220,7 +220,7 @@ const ImageAnimation = memo(({ data }: any) => {
         };
     }, [data.frames]);
     return (
-        <Card className="dark">
+        <Card className={`dark`}>
             <CardBody className="flex flex-row gap-2">
                 {
                     data.frames.map((_: any, idx: number) => (
