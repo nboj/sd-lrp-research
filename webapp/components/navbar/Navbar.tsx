@@ -95,7 +95,7 @@ const Menu = ({ onClose, open, ref }: MenuProps) => {
         <div className={`${styles.menu_wrapper} ${open && styles.open_menu_wrapper}`}>
             <motion.div
                 ref={ref}
-                // @ts-ignore
+                // @ts-expect-error - needed temporarily while Framer-Motion is behind react versions
                 className={`${styles.menu}`}
                 variants={variants}
                 initial={'init'}
