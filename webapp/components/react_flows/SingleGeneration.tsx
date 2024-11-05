@@ -28,8 +28,8 @@ const sortList = (list: any) => {
         return numB - numA;
     });
 }
-const lrps = importAll(require.context('@/public/single_generation/lrp_test_results', false, /\.(png|jpe?g|svg)$/));
-const noises = importAll(require.context('@/public/single_generation/noise_test_results', false, /\.(png|jpe?g|svg)$/));
+const lrps = importAll(require.context('../../public/single_generation/lrp_test_results/', false, /\.(png|jpe?g|svg)$/));
+const noises = importAll(require.context('../../public/single_generation/noise_test_results/', false, /\.(png|jpe?g|svg)$/));
 const lrp_frames = lrps.map((image: any) => image.default.src)
 const noise_frames = noises.map((image: any) => image.default.src)
 sortList(lrp_frames)

@@ -5,7 +5,8 @@ type Props = Readonly<{
     generation_id: string;
   }
 }>
-export default function Home({ params }: Props) {
+export default async function Home(props: Props) {
+  const params = await props.params;
   return (
     <main>
       <GenerationServer generation_id={params.generation_id} />

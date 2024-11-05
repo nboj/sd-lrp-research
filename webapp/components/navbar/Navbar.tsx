@@ -6,7 +6,7 @@ import { RiHammerFill } from "react-icons/ri";
 import { BsClipboard2PulseFill } from "react-icons/bs";
 import { usePathname } from 'next/navigation';
 import { BsGridFill } from "react-icons/bs";
-import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { Ref, useEffect, useMemo, useRef, useState } from 'react';
 import { IoClose } from "react-icons/io5";
 import { Link as LinkType } from '@/lib/types';
 import { motion } from 'framer-motion';
@@ -56,6 +56,7 @@ Navlink.displayName = 'NavLink'
 type MenuProps = Readonly<{
     onClose: () => void;
     open: boolean;
+    ref: Ref<HTMLDivElement>;
 }>
 const variants = {
     init: {
@@ -86,7 +87,7 @@ const variants = {
         }
     }
 }
-const Menu = forwardRef(({ onClose, open }: MenuProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Menu = ({ onClose, open, ref }: MenuProps) => {
     const handle_click = () => {
         onClose();
     }
@@ -94,13 +95,14 @@ const Menu = forwardRef(({ onClose, open }: MenuProps, ref: React.ForwardedRef<H
         <div className={`${styles.menu_wrapper} ${open && styles.open_menu_wrapper}`}>
             <motion.div
                 ref={ref}
+                // @ts-ignore
                 className={`${styles.menu}`}
                 variants={variants}
                 initial={'init'}
                 animate={open ? 'open' : 'init'}
             >
                 <div className={styles.menu_bar}>
-                    <p className={styles.nav_title}>SD LRP</p>
+                    <Link className={styles.nav_title} href='/'>SD LRP</Link>
                     <IoClose className={styles.close_button} onClick={handle_click} />
                 </div>
                 <ul className={styles.small_links_container}>
@@ -113,7 +115,7 @@ const Menu = forwardRef(({ onClose, open }: MenuProps, ref: React.ForwardedRef<H
             </motion.div >
         </div>
     )
-})
+}
 Menu.displayName = 'Menu'
 
 const Navbar = () => {
@@ -136,7 +138,7 @@ const Navbar = () => {
     }
     return (
         <nav className={styles.nav}>
-            <p className={styles.nav_title}>SD LRP</p>
+            <Link href='/' className={styles.nav_title}>SD LRP</Link>
             <ul className={styles.links_container}>
                 {
                     links.map((link: LinkType, index: number) => (

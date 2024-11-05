@@ -1,7 +1,7 @@
+@import '@xyflow/react/dist/style.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import '@xyflow/react/dist/style.css';
 
 :root {
   --background: #151515;

@@ -33,7 +33,7 @@ const About = () => {
           <div className={styles.why_lrp_container}>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique. Etiam velit mauris, tempor ac neque vel, mollis rhoncus magna. Ut tempus vulputate tristique. Donec tristique quis orci at mattis. Aenean varius ullamcorper risus, eget interdum augue dictum in. Suspendisse blandit pellentesque mauris, sit amet eleifend elit. Pellentesque quis sapien mauris. Integer ut est sed mauris pretium convallis. Praesent sodales sem metus, pellentesque aliquet velit porta vitae. Pellentesque quis mattis elit. Suspendisse augue est, ornare in facilisis eu, faucibus vel quam. Aenean vitae posuere ipsum, in congue dolor.</p>
             <div className={styles.lrp_heatmap_example}>
-              <Image src={lrp_heatmap} fill alt='LRP heatmap example.' />
+              <Image src={lrp_heatmap} fill alt='LRP heatmap example.' sizes={"100cqw"} />
             </div>
           </div>
         </Block>
