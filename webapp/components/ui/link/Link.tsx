@@ -22,7 +22,9 @@ const Link = ({ children, onClick, ...props }: Props) => {
         if (target.pathname !== pathname) {
             setLoading(true)
         }
-        onClick && onClick(e)
+        if (onClick) {
+            onClick(e)
+        }
     }, [pathname])
     return (<NextLink onClick={handleClick} {...props}>{children}</NextLink>)
 }
