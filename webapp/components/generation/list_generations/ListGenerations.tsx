@@ -1,11 +1,11 @@
 'use client'
 
 import { Generation } from "@/lib/types"
-import Link from "next/link"
+import Link from "@/components/ui/link/Link";
 import styles from '@/components/generation/list_generations/ListGenerations.module.css'
 import Image from "next/image"
 import LRPText from "@/components/lrp_text/LRPText"
-import { strToArray } from "@/lib/utils"
+import { parseRelevanceScores } from "@/lib/utils"
 
 type Props = Readonly<{
     generations: Generation[]
@@ -24,7 +24,7 @@ const ListGenerations = ({ generations }: Props) => {
                             )
                         }
                         <div className={styles.text_container}>
-                            <LRPText generation={generation} values={strToArray(generation.display_text?.text_relevance[0])} />
+                            <LRPText generation={generation} values={parseRelevanceScores(generation.display_text?.text_relevance[0])} />
                         </div>
                     </Link>
                 ))

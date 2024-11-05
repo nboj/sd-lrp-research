@@ -1,6 +1,6 @@
 'use client'
 import styles from '@/components/navbar/Navbar.module.css';
-import Link from 'next/link';
+import Link from "@/components/ui/link/Link";
 import { FaInfoCircle } from "react-icons/fa";
 import { RiHammerFill } from "react-icons/ri";
 import { BsClipboard2PulseFill } from "react-icons/bs";

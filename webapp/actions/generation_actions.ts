@@ -1,9 +1,10 @@
 'use server'
 import { Asset, FullGeneration, FullIteration, Generation, Iteration } from "@/lib/types"
-import { sql } from "@vercel/postgres"
+import { db } from "@vercel/postgres"
 
 export const get_full_generation = async (generation_id: string) => {
-  const { rows: generation_rows }: { rows: Generation[] } = await sql`
+  const client = await db.connect()
+  const { rows: generation_rows }: { rows: Generation[] } = await client.sql`
     SELECT * FROM generations
     WHERE id = ${generation_id}
   `
@@ -11,7 +12,7 @@ export const get_full_generation = async (generation_id: string) => {
     generation: generation_rows[0],
     iterations: []
   }
-  const { rows: iteration_rows }: { rows: Iteration[] } = await sql`
+  const { rows: iteration_rows }: { rows: Iteration[] } = await client.sql`
     SELECT * FROM iterations
     WHERE generation_id = ${generation_id}
     ORDER BY index
@@ -21,7 +22,7 @@ export const get_full_generation = async (generation_id: string) => {
       iteration: iteration_rows[i],
       assets: []
     }
-    const { rows: asset_rows }: { rows: Asset[] } = await sql`
+    const { rows: asset_rows }: { rows: Asset[] } = await client.sql`
       SELECT * FROM assets
       WHERE iteration_id = ${full_iteration.iteration.id}
     `

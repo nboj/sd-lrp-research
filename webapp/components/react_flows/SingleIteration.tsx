@@ -3,7 +3,7 @@ import { Background, ReactFlow, Controls, useNodesState, useEdgesState } from "@
 import styles from '@/components/react_flows/SingleIteration.module.css'
 import { useCallback, useState } from "react"
 import { Card, CardBody, CardHeader, ModalBody, ModalHeader, useDisclosure } from "@nextui-org/react"
-import Link from 'next/link';
+import Link from "@/components/ui/link/Link";
 import Image from 'next/image';
 import Popup from "@/components/popup/Popup";
 import { EDGE_TYPES, NODE_TYPES } from "@/lib/types"

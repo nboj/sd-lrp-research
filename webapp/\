@@ -44,11 +44,10 @@
     cursor: pointer;
     color: color-mix(in srgb, white, black 20%);
     transform: scale(1);
-    transition: 0.1s ease-in-out;
+    transition: 0.05s ease-in-out;
 }
 
 .control_button:hover {
-    transform: scale(1.1);
     color: color-mix(in srgb, white, black 40%);
 }
 

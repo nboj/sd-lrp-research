@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Providers from "@/components/Providers";
+import { Suspense } from "react";
+import PageLoader from "@/components/ui/page_loader/PageLoader";
 
 export const metadata: Metadata = {
   title: {
@@ -19,6 +21,9 @@ const RootLayout = ({ children }: Props) => {
     <html lang="en">
       <body className="dark">
         <Providers>
+          <Suspense fallback={null}>
+            <PageLoader />
+          </Suspense>
           <Navbar />
           {children}
         </Providers>
