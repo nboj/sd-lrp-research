@@ -13,13 +13,13 @@ const GenerationServer = async ({ generation_id }: Props) => {
     const full_generation: FullGeneration = await get_full_generation(generation_id)
     const prompt = parseStringArray(full_generation.generation.prompt[0])
     return (
-        <>
+        <div className={styles.main}>
             <div className={styles.header}>
                 <Link href='/results' className={styles.back_link}><FaArrowLeftLong /> Back</Link>
                 <h1 className={styles.title}>{prompt}</h1>
             </div>
             <Generation generation={full_generation} />
-        </>
+        </div>
     )
 
 }

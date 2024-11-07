@@ -1,33 +1,20 @@
 import { Generation } from "@/lib/types";
+import { getRelevanceColor } from "@/lib/utils";
 
-function getRelevanceColor(value: number, min = -1, max = 1) {
-    value = Math.max(min, Math.min(max, value));
-    const normalized = (value - min) / (max - min) * 2 - 1;
-    let red, green, blue;
-    if (normalized > 0) {
-        // Positive relevance
-        red = 120 + Math.round(120 * normalized);
-        green = 120 - Math.round(100 * normalized);
-        blue = 120 - Math.round(10 * normalized);
-    } else {
-        // Negative relevance
-        red = 120 + Math.round(100 * normalized);
-        green = 120 + Math.round(10 * normalized);
-        blue = 120 - Math.round(120 * normalized);
-    }
-    return `rgb(${red}, ${green}, ${blue})`;
-}
 type Props = Readonly<{
     generation: Generation;
     values: number[];
+    className?: any;
+    min?: number;
+    max?: number;
 }>
-const LRPText = ({ generation, values }: Props) => {
+const LRPText = ({ generation, values, className, min = -5, max = 5 }: Props) => {
     return (
-        <p>
+        <p className={className}>
             {
                 JSON.parse(generation.prompt[0].replace('{', '[').replace('}', ']')).map((item: string, prompt_idx: number) => {
                     return (
-                        <span key={`lrp-${prompt_idx}`} style={{ color: getRelevanceColor(values[prompt_idx], -5, 5) }}>{item}</span>
+                        <span key={`lrp-${prompt_idx}`} style={{ color: getRelevanceColor(values[prompt_idx], min, max) }}>{item}</span>
                     )
                 })
             }

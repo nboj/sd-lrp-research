@@ -68,6 +68,10 @@ p {
   margin: 5px;
 }
 
+.recharts-tooltip-cursor {
+  fill: var(--primary);
+}
+
 @media (max-width: 860px) {
   body {
     &>div {
