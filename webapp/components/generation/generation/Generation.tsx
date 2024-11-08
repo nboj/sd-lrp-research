@@ -12,13 +12,13 @@ import { Bar, Tooltip, BarChart, Customized, Rectangle, ReferenceLine, Responsiv
 
 type AssetImapeProps = Readonly<{
     pathname: string;
-    loaded: boolean;
     onLoad: any;
+    style?: any;
 }>
-const AssetImage = ({ pathname, loaded, onLoad }: AssetImapeProps) => {
+const AssetImage = ({ pathname, onLoad, style }: AssetImapeProps) => {
     return (
         <div className={styles.asset_image}>
-            <NextImage loading='eager' src={pathname} alt="" fill onLoad={onLoad} style={{ opacity: loaded ? "1" : "0" }} sizes="100px" />
+            <NextImage loading='eager' src={pathname} alt="" fill onLoad={onLoad} sizes="100px" style={{ ...style }} />
         </div>
     )
 }
@@ -146,10 +146,10 @@ const Generation = ({ generation }: Props) => {
                         {!loaded && <p>Loading...</p>}
                         {
                             assets.map((iteration: IterationSet, idx: number) => (idx == index || !loaded) && (
-                                <div className={styles.display_container} key={`${iteration.lrp.id}-iteration`} style={{ position: loaded ? "relative" : "absolute" }} >
-                                    <AssetImage pathname={iteration.lrp.pathname} loaded={loaded} onLoad={handleLoad} />
-                                    <AssetImage pathname={iteration.noise_pred.pathname} loaded={loaded} onLoad={handleLoad} />
-                                    <AssetImage pathname={iteration.noise.pathname} loaded={loaded} onLoad={handleLoad} />
+                                <div className={styles.display_container} key={`${iteration.lrp.id}-iteration`} style={!loaded ? { position: "absolute", top: 0, left: 0, opacity: "0" } : {}} >
+                                    <AssetImage pathname={iteration.lrp.pathname} onLoad={handleLoad} style={{ borderRadius: "16px 0 0 16px" }} />
+                                    <AssetImage pathname={iteration.noise.pathname} onLoad={handleLoad} />
+                                    <AssetImage pathname={iteration.noise_pred.pathname} onLoad={handleLoad} style={{ borderRadius: "0 16px 16px 0" }} />
                                 </div>
                             ))
                         }
@@ -213,6 +213,7 @@ const Generation = ({ generation }: Props) => {
                                     <XAxis dataKey={'name'} />
                                     <YAxis dataKey={'value'} domain={assets[index].domain} />
                                     <Tooltip wrapperClassName={styles.tooltip_wrapper} />
+                                    <ReferenceLine y={0} stroke="var(--secondary)" />
                                     <Bar
                                         animationDuration={100}
                                         className={styles.bar}
@@ -248,6 +249,7 @@ const Generation = ({ generation }: Props) => {
                             <XAxis dataKey={'name'} />
                             <YAxis dataKey={'value'} domain={average.domain} />
                             <Tooltip wrapperClassName={styles.tooltip_wrapper} />
+                            <ReferenceLine y={0} stroke="var(--secondary)" />
                             <Bar
                                 className={styles.bar}
                                 maxBarSize={100}

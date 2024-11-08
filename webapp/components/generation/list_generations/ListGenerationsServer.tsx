@@ -17,7 +17,6 @@ const ListGenerationsServer = async () => {
             const { rows: assets2 }: { rows: Asset[] } = await client.sql`select * from assets where iteration_id = ${iterations2[0].id}`
             generation_rows[i].display_text = assets2.find((item) => item.asset_type === AssetType.TEXT_SCORES)
         }
-        console.log("here")
         return <ListGenerations generations={generation_rows} />
     } catch {
         return (
