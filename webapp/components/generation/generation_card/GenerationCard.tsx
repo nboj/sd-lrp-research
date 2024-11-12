@@ -7,7 +7,7 @@ import { parseRelevanceScores } from "@/lib/utils"
 
 type Props = Readonly<{
     generation: Generation
-    selected: boolean
+    selected?: boolean
 }>
 const GenerationCard = ({ generation, selected }: Props) => {
     return (
