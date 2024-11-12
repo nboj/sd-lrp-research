@@ -6,31 +6,3 @@
   width: 100%;
   flex-wrap: wrap;
 }
-
-.link {
-  display: flex;
-  border-radius: 16px;
-  flex-direction: column;
-  background: var(--primary);
-  align-items: center;
-  width: 15rem;
-  min-height: 14rem;
-  flex-shrink: 0;
-}
-
-.display_image_container {
-  position: relative;
-  container: display_container / inline-size;
-  width: 100%;
-  height: 12rem;
-  flex-shrink: 0;
-}
-
-.display_image {
-  object-fit: cover;
-  border-radius: 16px 16px 0 0;
-}
-
-.text_container {
-  padding: 10px 20px;
-}

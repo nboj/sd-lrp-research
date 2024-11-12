@@ -1,5 +1,8 @@
 .main {
+    container: main / inline-size;
     margin: 1rem 2rem;
+    width: 100%;
+    height: fit-content;
 }
 
 .wrapper {
@@ -149,7 +152,7 @@
     transform: scale(0.9)
 }
 
-@media only screen and (max-width: 1500px) {
+@container main (max-width: 1130px) {
     .back_link {
         position: relative;
         top: 0;
@@ -159,7 +162,7 @@
     }
 }
 
-@media only screen and (max-width: 800px) {
+@container main (max-width: 800px) {
     .title {
         font-size: 5cqw;
     }

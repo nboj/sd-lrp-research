@@ -16,8 +16,8 @@ export const generateStaticParams = async () => {
 export default async function Home({ params }: Props) {
   const { generation_id } = await params;
   return (
-    <main>
+    <>
       <GenerationServer generation_id={generation_id} />
-    </main>
+    </>
   );
 }
