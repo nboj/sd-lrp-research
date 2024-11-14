@@ -83,6 +83,16 @@ const SquareNode = memo(({ data }: any) => {
 })
 SquareNode.displayName = 'SquareNode'
 
+const SquareNodeWrap = memo(({ data }: any) => {
+    return (
+        <div className={styles.square_node_wrap}>
+            <h2>{data.name}</h2>
+            <Handles {...data} />
+        </div>
+    )
+})
+SquareNodeWrap.displayName = 'SquareNodeWrap'
+
 const PixelNode = memo(({ data }: any) => {
     return (
         <div className={styles.pixel_node} style={{ background: data.color }}>
@@ -101,6 +111,15 @@ const RGBNode = memo(({ data }: any) => {
     )
 })
 RGBNode.displayName = 'RGBNode'
+
+const RGBNodeAlt = memo(({ data }: any) => {
+    return (
+        <div className={styles.rgb_node_alt}>
+            <Handles {...data} />
+        </div>
+    )
+})
+RGBNodeAlt.displayName = 'RGBNodeAlt'
 
 const TitleText = memo(({ data }: any) => {
     return (
@@ -235,4 +254,4 @@ const ImageAnimation = memo(({ data }: any) => {
 })
 ImageAnimation.displayName = "ImageAnimation";
 
-export { CircleNode, SquareNode, ImageNode, PixelNode, RGBNode, TitleText, SubtitleText, Dots, ImageAnimation };
+export { CircleNode, SquareNode, SquareNodeWrap, ImageNode, PixelNode, RGBNode, RGBNodeAlt, TitleText, SubtitleText, Dots, ImageAnimation };

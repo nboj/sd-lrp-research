@@ -3,6 +3,7 @@ import Image from 'next/image';
 import lrp_heatmap from '@/public/lrp_heatmap_example.png';
 import SingleIteration from '@/components/react_flows/SingleIteration';
 import SingleGeneration from '@/components/react_flows/SingleGeneration';
+import InputsDiagram from '@/components/react_flows/InputsDiagram';
 
 type BlockProps = Readonly<{
   children: React.ReactNode;
@@ -11,7 +12,7 @@ const Block = ({ children }: BlockProps) => {
   return (
     <div className={styles.block}>
       {children}
-    </div>
+    </div>  
   )
 }
 
@@ -43,6 +44,25 @@ const About = () => {
           <SingleIteration />
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique. Etiam velit mauris, tempor ac neque vel, mollis rhoncus magna. Ut tempus vulputate tristique. Donec tristique quis orci at mattis. Aenean varius ullamcorper risus, eget interdum augue dictum in.</p>
           <SingleGeneration />
+        </Block>
+        <Block>
+          <h3>Internal Architecture for LRP Integration</h3>
+          <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique. 
+          Etiam velit mauris, tempor ac neque vel, mollis rhoncus magna.
+          Ut tempus vulputate tristique. Donec tristique quis orci at mattis. 
+          Aenean varius ullamcorper risus, eget interdum augue dictum in.
+          </p>
+        </Block>
+        <Block>
+          <h2>Unet Generation</h2>
+          <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique. 
+          Etiam velit mauris, tempor ac neque vel, mollis rhoncus magna.
+          Ut tempus vulputate tristique. Donec tristique quis orci at mattis. 
+          Aenean varius ullamcorper risus, eget interdum augue dictum in.
+          </p>
+          <InputsDiagram/>
         </Block>
       </div>
     </main>
