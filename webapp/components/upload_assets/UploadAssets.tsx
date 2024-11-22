@@ -1,8 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useActionState, useState } from 'react'
 import Image from 'next/image'
 import { upload } from '@/actions/file_actions'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useFormStatus } from 'react-dom'
 
 type Props = Readonly<{
     label: string;
@@ -47,7 +47,8 @@ const UploadButton = () => {
     )
 }
 const UploadAssets = () => {
-    const [state, action] = useFormState(upload, initialState)
+    const [state, action] = useActionState(upload, initialState)
+    console.log(state?.error.message, state)
     return (
         <form action={action}>
             <label htmlFor='prompt'>Enter the prompt used:</label>
@@ -57,11 +58,7 @@ const UploadAssets = () => {
             <Collection label='lrp_noise' />
             <Collection label='lrp_text' />
             <UploadButton />
-            {
-                state?.error?.message && (
-                    <p>{state.error.message}</p>
-                )
-            }
+            <p>{state?.error?.message}</p>
         </form>
     )
 };

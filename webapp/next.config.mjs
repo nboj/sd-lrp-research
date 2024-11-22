@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: '7aqagtdznmitxhok.public.blob.vercel-storage.com'
       }
     ]
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "1gb"
+    }
   }
 };
 

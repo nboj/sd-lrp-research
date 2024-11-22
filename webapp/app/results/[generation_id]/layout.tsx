@@ -14,8 +14,10 @@ export default async function RootLayout({ children, params }: Props) {
   if (generations.generations && !generations.error) {
     return (
       <main className={styles.main}>
+        <div className={styles.inner_container}>
+          {children}
+        </div>
         <Sidebar generations={generations.generations} selected={generation_id} className={styles.sidebar} />
-        {children}
       </main>
     )
   } else {

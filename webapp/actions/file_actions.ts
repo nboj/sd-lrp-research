@@ -30,7 +30,7 @@ export const upload = async (_: any, formData: FormData) => {
   let lrp_text: string[][] = []
   for (let i = 0; i < lrp_text_files.length; i++) {
     const text_file = lrp_text_files[i]
-    const text_scores = (await text_file.text()).trim().split('\n')
+    const text_scores = (await text_file.text()).trim().split('\n').slice(1, prompt.length)
     lrp_text.push(text_scores)
   }
   if (!prompt) {

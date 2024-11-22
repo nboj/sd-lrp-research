@@ -10,19 +10,5 @@
     overflow-x: hidden;
     flex-shrink: 0;
     padding: 1rem 2rem;
-    border-right: 2px solid var(--primary);
-}
-
-.main::-webkit-scrollbar {
-    width: 10px;
-}
-
-.main::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.main::-webkit-scrollbar-thumb {
-    background: var(--secondary);
-    border: 1px solid var(--background);
-    border-radius: 16px;
+    border-left: 2px solid var(--primary);
 }
