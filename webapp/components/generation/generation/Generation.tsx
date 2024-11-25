@@ -18,7 +18,7 @@ type AssetImapeProps = Readonly<{
 const AssetImage = ({ pathname, onLoad, style }: AssetImapeProps) => {
     return (
         <div className={styles.asset_image}>
-            <NextImage loading='eager' src={pathname} alt="" fill onLoad={onLoad} sizes="100px" style={{ ...style }} />
+            <NextImage loading='eager' src={pathname} alt="" fill onLoad={onLoad} sizes="500px" style={{ ...style }} />
         </div>
     )
 }
