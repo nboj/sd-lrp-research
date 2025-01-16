@@ -1,6 +1,22 @@
 import { AnimatedImageEdge } from "@/components/react_flows/edges/AnimatedImageEdge";
 import { CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
 
+export type GridOffset = Readonly<{
+  x: number;
+  y: number;
+}>
+
+export enum Direction {
+  UP = 0,
+  DOWN,
+  LEFT,
+  RIGHT
+}
+
+export type FlowEdge = Readonly<{
+
+}>
+
 export type Generation = {
   id: number;
   prompt: string[];
@@ -60,3 +76,6 @@ export const NODE_TYPES = {
   dots: Dots,
   animated_image: ImageAnimation,
 }
+
+export type NodeType = Readonly<typeof NODE_TYPES>
+export type NodeTypeKey = Readonly<keyof NodeType>
