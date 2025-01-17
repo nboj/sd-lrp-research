@@ -5,36 +5,41 @@ import NextImage from 'next/image';
 import styles from '@/components/react_flows/nodes/Nodes.module.css';
 import { Card, CardBody, CardFooter, Progress } from "@nextui-org/react";
 
-const Handles = memo(({ left = 'source', right = 'target', top = 'target', bottom = 'source', disable_left = false, disable_right = false, disable_top = true, disable_bottom = true }: any) => {
+const Handles = memo(({ id, left = 'source', right = 'target', top = 'target', bottom = 'source', disable_left = false, disable_right = false, disable_top = true, disable_bottom = true }: any) => {
+    console.log(`${id}-bottom`)
     return (
         <>
             {
-                !disable_right && (
+                (
                     <Handle
+                        id={`${id}-right`}
                         type={right}
                         position={Position.Right}
                     />
                 )
             }
             {
-                !disable_left && (
+                (
                     <Handle
+                        id={`${id}-left`}
                         type={left}
                         position={Position.Left}
                     />
                 )
             }
             {
-                !disable_top && (
+                (
                     <Handle
+                        id={`${id}-top`}
                         type={top}
                         position={Position.Top}
                     />
                 )
             }
             {
-                !disable_bottom && (
+                (
                     <Handle
+                        id={`${id}-bottom`}
                         type={bottom}
                         position={Position.Bottom}
                     />
