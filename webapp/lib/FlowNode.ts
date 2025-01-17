@@ -1,22 +1,14 @@
 import { NotImplementedError } from "./errors";
-import { Direction, Coords, NodeTypeKey } from "./types";
+import { Direction, Coords, NodeTypeKey, NodeData, FlowNodeProps } from "./types";
 import FlowEdge from "./FlowEdge";
 
-type FlowNodeProps = Readonly<{
-  id: string;
-  type: NodeTypeKey;
-  data?: any;
-  width?: number;
-  height?: number;
-  position?: Coords;
-}>
 
 export default class FlowNode {
   #id: string;
   #type: NodeTypeKey;
-  #width: number = -1;
-  #height: number = -1;
-  #data: any = {};
+  #width: number;
+  #height: number;
+  #data: NodeData[NodeTypeKey];
   #position?: Coords;
 
   #parent?: FlowNode;
@@ -25,37 +17,28 @@ export default class FlowNode {
   #left: Array<[FlowNode, FlowEdge]>;
   #right: Array<[FlowNode, FlowEdge]>;
 
-  #grid_offset?: Coords;
-  #node_padding?: Coords;
-  constructor(props: FlowNodeProps) {
-    this.#grid_offset = { x: 0, y: 0 };
+  #node_padding: Coords;
+  #offset: Coords
+  constructor(props: FlowNodeProps<NodeTypeKey>) {
     this.#up = new Array<[FlowNode, FlowEdge]>();
     this.#down = new Array<[FlowNode, FlowEdge]>();
     this.#left = new Array<[FlowNode, FlowEdge]>();
     this.#right = new Array<[FlowNode, FlowEdge]>();
 
-    this.#id = props.id
+    this.#id = crypto.randomUUID();
     this.#type = props.type;
-    props.data.id = this.#id;
-    this.#data = props.data;
+    this.#data = { ...props.data, id: this.#id };
     this.#position = props.position;
-    if (props.height) {
-      this.#height = props.height;
-    }
-    if (props.width) {
-      this.#width = props.width;
-    }
+    this.#height = props.height ?? -1;
+    this.#width = props.width ?? -1;
+    this.#node_padding = props.padding ?? { x: 20, y: 20 };
+    this.#offset = props.offset ?? { x: 0, y: 0 }
   }
-  insert_node(dir: Direction, props: FlowNodeProps): FlowNode {
+  insert_node(dir: Direction, props: FlowNodeProps<NodeTypeKey>): FlowNode {
     let new_node = new FlowNode({ ...props });
     new_node.#set_parent(this);
     this.#add_direction(new_node, dir);
     return new_node;
-  }
-  set node_padding(padding: Coords) {
-    if (!this.#node_padding) {
-      this.#node_padding = padding;
-    }
   }
   get up() {
     return this.#up;
@@ -94,12 +77,6 @@ export default class FlowNode {
     this.#position = position
   }
   get position() {
-    if (this.#node_padding) {
-      if (this.#position) {
-        return { x: this.#position.x + this.#node_padding.x, y: this.#position.y + this.#node_padding.y };
-      }
-      return { x: this.#node_padding.x, y: this.#node_padding.y };
-    }
     if (this.#position) {
       return { x: this.#position.x, y: this.#position.y };
     }
@@ -108,6 +85,12 @@ export default class FlowNode {
   }
   get parent() {
     return this.#parent;
+  }
+  get padding() {
+    return this.#node_padding;
+  }
+  get offset() {
+    return this.#offset;
   }
   #add_direction(node: FlowNode, dir: Direction) {
     // { id: "epixel-3", animated: true, source: "unet", target: 'pixel-3' },

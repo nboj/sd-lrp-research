@@ -1,5 +1,6 @@
 import { AnimatedImageEdge } from "@/components/react_flows/edges/AnimatedImageEdge";
 import { CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 export type Coords = Readonly<{
   x: number;
@@ -73,5 +74,49 @@ export const NODE_TYPES = {
   animated_image: ImageAnimation,
 }
 
+type HandleType = "source" | "target";
+
+type BaseData = {
+  id?: string;
+  disable_left?: boolean;
+  disable_right?: boolean;
+  disable_top?: boolean;
+  disable_bottom?: boolean;
+  left?: HandleType;
+  right?: HandleType;
+  top?: HandleType;
+  bottom?: HandleType;
+}
+export interface NodeData {
+  square: BaseData & {
+    name: string;
+  };
+  circle: BaseData & {
+    name: string;
+  };
+  rgb: BaseData & {};
+  pixel: BaseData & {};
+  title: BaseData & {};
+  subtitle: BaseData & {};
+  image: BaseData & {
+    image: string | StaticImport;
+    text?: string;
+    width?: string;
+  };
+  dots: BaseData & {};
+  animated_image: BaseData & {};
+}
+
 export type NodeType = Readonly<typeof NODE_TYPES>
 export type NodeTypeKey = Readonly<keyof NodeType>
+
+export type FlowNodeProps<T extends NodeTypeKey> = Readonly<{
+  type: T;
+  data: NodeData[T];
+  width?: number;
+  height?: number;
+  position?: Coords;
+  padding?: Coords;
+  offset?: Coords;
+}>
+

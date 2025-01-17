@@ -14,7 +14,7 @@ export default class FlowEdge {
   #sourceHandle: string;
   #targetHandle: string;
   constructor(props: FlowEdgeProps) {
-    this.#id = `${props.source}+${props.target}-edge`;
+    this.#id = crypto.randomUUID();
     this.#source = props.source;
     this.#target = props.target;
     this.#targetHandle = props.targetHandle;

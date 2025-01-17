@@ -6,7 +6,6 @@ import styles from '@/components/react_flows/nodes/Nodes.module.css';
 import { Card, CardBody, CardFooter, Progress } from "@nextui-org/react";
 
 const Handles = memo(({ id, left = 'source', right = 'target', top = 'target', bottom = 'source', disable_left = false, disable_right = false, disable_top = true, disable_bottom = true }: any) => {
-    console.log(`${id}-bottom`)
     return (
         <>
             {
