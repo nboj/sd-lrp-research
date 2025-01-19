@@ -1,38 +1,54 @@
 import { NotImplementedError } from "./errors";
-import { Direction, Coords, NodeTypeKey, NodeData, FlowNodeProps } from "./types";
+import { Direction, Coords, NodeTypeKey, NodeData, FlowNodeProps, RectPadding } from "./types";
 import FlowEdge from "./FlowEdge";
 
 
 export default class FlowNode {
   #id: string;
+  #parent_id?: string;
   #type: NodeTypeKey;
   #width: number;
   #height: number;
   #data: NodeData[NodeTypeKey];
+  #edge?: FlowEdge;
+  #reverse_edge: boolean;
+  #disable_left_edge: boolean;
+  #disable_right_edge: boolean;
+  #disable_top_edge: boolean;
+  #disable_bottom_edge: boolean;
   #position?: Coords;
 
   #parent?: FlowNode;
-  #up: Array<[FlowNode, FlowEdge]>;
-  #down: Array<[FlowNode, FlowEdge]>;
-  #left: Array<[FlowNode, FlowEdge]>;
-  #right: Array<[FlowNode, FlowEdge]>;
+  #up: Array<[FlowNode, FlowEdge | undefined]>;
+  #down: Array<[FlowNode, FlowEdge | undefined]>;
+  #left: Array<[FlowNode, FlowEdge | undefined]>;
+  #right: Array<[FlowNode, FlowEdge | undefined]>;
 
-  #node_padding: Coords;
+  #node_padding: RectPadding;
   #offset: Coords
+  #custom_edges: Array<FlowEdge | undefined>;
   constructor(props: FlowNodeProps<NodeTypeKey>) {
-    this.#up = new Array<[FlowNode, FlowEdge]>();
-    this.#down = new Array<[FlowNode, FlowEdge]>();
-    this.#left = new Array<[FlowNode, FlowEdge]>();
-    this.#right = new Array<[FlowNode, FlowEdge]>();
+    this.#up = new Array<[FlowNode, FlowEdge | undefined]>();
+    this.#down = new Array<[FlowNode, FlowEdge | undefined]>();
+    this.#left = new Array<[FlowNode, FlowEdge | undefined]>();
+    this.#right = new Array<[FlowNode, FlowEdge | undefined]>();
 
-    this.#id = crypto.randomUUID();
+    this.#custom_edges = [];
+    this.#id = props.id ?? crypto.randomUUID();
     this.#type = props.type;
-    this.#data = { ...props.data, id: this.#id };
+    this.#data = { ...props.data, id: this.#id, disable_top: props.data.disable_top ?? true, disable_bottom: props.data.disable_bottom ?? true, disable_left: props.data.disable_left ?? true, disable_right: props.data.disable_right ?? true };
+    this.#edge = props.edge;
     this.#position = props.position;
     this.#height = props.height ?? -1;
     this.#width = props.width ?? -1;
-    this.#node_padding = props.padding ?? { x: 20, y: 20 };
+    this.#node_padding = { top: props.padding?.top ?? 20, bottom: props.padding?.bottom ?? 20, left: props.padding?.left ?? 20, right: props.padding?.right ?? 20 };
     this.#offset = props.offset ?? { x: 0, y: 0 }
+    this.#reverse_edge = props.reverse_edge ?? false;
+    this.#disable_left_edge = props.disable_left_edge ?? false;
+    this.#disable_right_edge = props.disable_right_edge ?? false;
+    this.#disable_top_edge = props.disable_top_edge ?? false;
+    this.#disable_bottom_edge = props.disable_bottom_edge ?? false;
+    this.#parent_id = props.parent_id;
   }
   insert_node(dir: Direction, props: FlowNodeProps<NodeTypeKey>): FlowNode {
     let new_node = new FlowNode({ ...props });
@@ -58,6 +74,9 @@ export default class FlowNode {
   get type() {
     return this.#type;
   }
+  get parent_id() {
+    return this.#parent_id;
+  }
   get data() {
     return this.#data;
   }
@@ -72,6 +91,9 @@ export default class FlowNode {
   }
   set height(height: number) {
     this.#height = height;
+  }
+  get custom_edges() {
+    return this.#custom_edges;
   }
   set position(position: { x: number, y: number }) {
     this.#position = position
@@ -92,60 +114,76 @@ export default class FlowNode {
   get offset() {
     return this.#offset;
   }
-  #add_direction(node: FlowNode, dir: Direction) {
-    // { id: "epixel-3", animated: true, source: "unet", target: 'pixel-3' },
+  #get_edge(node: FlowNode, dir: Direction) {
+    let edge;
     switch (dir) {
       case Direction.UP:
-        const up_edge = new FlowEdge({
-          source: node.parent!.id,
-          sourceHandle: `${node.parent!.id}-top`,
-          target: node.id,
-          targetHandle: `${node.id}-bottom`,
-        });
-        node.data.disable_bottom = false
-        node.data.bottom = 'target'
-        node.parent!.data.disable_top = false
-        node.parent!.data.top = 'source'
-        this.#up.push([node, up_edge]);
+        edge = !node.#disable_bottom_edge ? new FlowEdge({
+          source: node.#reverse_edge ? node.id : this.id,
+          sourceHandle: node.#reverse_edge ? `${node.id}-bottom` : `${this.id}-top`,
+          target: node.#reverse_edge ? node.parent!.id : node.id,
+          targetHandle: node.#reverse_edge ? `${this.id}-top` : `${node.id}-bottom`,
+        }) : undefined;
+        node.data.disable_bottom = node.#disable_bottom_edge ?? false
+        this.data.disable_top = node.#disable_bottom_edge ?? false
+        node.data.bottom = node.#reverse_edge ? 'source' : 'target'
+        this.data.top = node.#reverse_edge ? 'target' : 'source'
         break;
       case Direction.DOWN:
-        const down_edge = new FlowEdge({
-          source: node.parent!.id,
-          sourceHandle: `${node.parent!.id}-bottom`,
+        edge = !node.#disable_top_edge ? new FlowEdge({
+          source: this.id,
+          sourceHandle: `${this.id}-bottom`,
           target: node.id,
           targetHandle: `${node.id}-top`,
-        });
-        node.data.disable_top = false
+        }) : undefined;
+        node.data.disable_top = node.#disable_top_edge ?? false
+        this.data.disable_bottom = node.#disable_top_edge ?? false
         node.data.top = 'target'
-        node.parent!.data.disable_bottom = false
-        node.parent!.data.bottom = 'source'
-        this.#down.push([node, down_edge]);
+        this.data.bottom = 'source'
         break;
       case Direction.LEFT:
-        const left_edge = new FlowEdge({
-          source: node.parent!.id,
-          sourceHandle: `${node.parent!.id}-left`,
+        edge = !node.#disable_right_edge ? new FlowEdge({
+          source: this.id,
+          sourceHandle: `${this.id}-left`,
           target: node.id,
           targetHandle: `${node.id}-right`,
-        });
-        node.data.disable_right = false
+        }) : undefined;
+        node.data.disable_right = node.#disable_right_edge ?? false
+        this.data.disable_left = node.#disable_right_edge ?? false
         node.data.right = 'target'
-        node.parent!.data.disable_left = false
-        node.parent!.data.left = 'source'
-        this.#left.push([node, left_edge]);
+        this.data.left = 'source'
         break;
       case Direction.RIGHT:
-        const right_edge = new FlowEdge({
-          source: node.parent!.id,
-          sourceHandle: `${node.parent!.id}-right`,
+        edge = !node.#disable_left_edge ? new FlowEdge({
+          source: this.id,
+          sourceHandle: `${this.id}-right`,
           target: node.id,
           targetHandle: `${node.id}-left`,
-        });
+        }) : undefined;
+        node.data.disable_left = node.#disable_left_edge ?? false
+        this.data.disable_right = node.#disable_left_edge ?? false
         node.data.left = 'target'
-        node.data.disable_left = false
-        node.parent!.data.disable_right = false
-        node.parent!.data.right = 'source'
-        this.#right.push([node, right_edge]);
+        this.data.right = 'source'
+        break;
+      default:
+        throw new NotImplementedError();
+    }
+    return edge
+  }
+  #add_direction(node: FlowNode, dir: Direction) {
+    let edge = this.#get_edge(node, dir)
+    switch (dir) {
+      case Direction.UP:
+        this.#up.push([node, !node.#disable_top_edge ? node.#edge ?? edge : undefined]);
+        break;
+      case Direction.DOWN:
+        this.#down.push([node, !node.#disable_bottom_edge ? node.#edge ?? edge : undefined]);
+        break;
+      case Direction.LEFT:
+        this.#left.push([node, !node.#disable_left_edge ? node.#edge ?? edge : undefined]);
+        break;
+      case Direction.RIGHT:
+        this.#right.push([node, !node.#disable_right_edge ? node.#edge ?? edge : undefined]);
         break;
       default:
         throw new NotImplementedError();
@@ -154,8 +192,7 @@ export default class FlowNode {
   #set_parent(node: FlowNode) {
     this.#parent = node;
   }
-  #connect_node(other: FlowNode) {
-    // attach new edge from this node to other node
-    throw new NotImplementedError();
+  connect_node(other: FlowNode, dir: Direction, edge?: FlowEdge) {
+    this.#custom_edges.push(edge ?? this.#get_edge(other, dir));
   }
 }

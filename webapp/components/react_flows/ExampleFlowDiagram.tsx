@@ -1,31 +1,79 @@
 "use client"
-import { Background, Node, ReactFlow, Controls, useNodesState, useEdgesState, OnNodesChange, NodeChange, EdgeChange, useReactFlow, Edge, useUpdateNodeInternals } from "@xyflow/react";
+import { Background, Node, ReactFlow, Controls, NodeChange, Edge, ReactFlowInstance } from "@xyflow/react";
 import styles from '@/components/react_flows/SingleGeneration.module.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ModalHeader } from "@nextui-org/react";
 import { Direction, EDGE_TYPES, NODE_TYPES } from "@/lib/types";
-import FlowNode from "@/lib/FlowNode";
 import FlowGraph from "@/lib/FlowGraph";
+import FlowNode from "@/lib/FlowNode";
 import single_iteration_img from '@/public/single_generation/single_iteration.png';
 
-const PopupBody = ({ node_id }: any) => {
-    switch (node_id) {
-        default:
-            return (
-                <ModalHeader className="flex flex-col gap-1">Error.</ModalHeader>
-            )
-    }
+const build_rgb = (root: FlowNode, graph: FlowGraph) => {
+    root
+        .insert_node(Direction.LEFT, {
+            type: 'square',
+            data: {
+                name: "Latent Noisy input Image Relevance Scores"
+            },
+            disable_right_edge: true,
+            offset: { x: -300, y: 0 },
+            padding: { bottom: 0 },
+        })
+    const rgb = root
+        .insert_node(Direction.LEFT, {
+            id: "test_rgb_node",
+            type: "rgb",
+            data: {
+            },
+            offset: { x: -300, y: 0 },
+            disable_right_edge: true,
+        })
+    const red_node = new FlowNode({
+        type: "pixel",
+        data: {
+            name: "R",
+            color: '#7D4D4D',
+            disable_right: false,
+        },
+        position: { x: 60, y: 40 },
+        parent_id: "test_rgb_node"
+    })
+    const green_node = red_node
+        .insert_node(Direction.DOWN, {
+            type: "pixel",
+            data: {
+                name: "G",
+                color: '#4D7D5B',
+                disable_right: false,
+            },
+            disable_top_edge: true,
+            parent_id: "test_rgb_node"
+        })
+    const blue_node = green_node
+        .insert_node(Direction.DOWN, {
+            type: "pixel",
+            data: {
+                name: "B",
+                color: '#4D527D',
+                disable_right: false,
+            },
+            disable_top_edge: true,
+            parent_id: "test_rgb_node"
+        })
+    graph.add_custom_node(red_node);
+    root.connect_node(red_node, Direction.LEFT);
+    root.connect_node(green_node, Direction.LEFT);
+    root.connect_node(blue_node, Direction.LEFT);
+    return rgb;
 }
-PopupBody.displayName = 'PopupBody3';
-
-type FlowContentProps = Readonly<{
-    root: FlowNode;
-    change_handler_ref: React.RefObject<any>;
-    onUpdateNodes: () => void;
-}>
-const FlowContent = ({ root, onUpdateNodes, change_handler_ref }: FlowContentProps) => {
-    const { fitView } = useReactFlow();
-    useEffect(() => {
+const ExampleFlowDiagram = () => {
+    const graph = useMemo(() => {
+        const _graph = new FlowGraph({
+            type: 'circle',
+            data: {
+                name: "Final Pred Noise"
+            }
+        })
+        const root = _graph.root
         root
             .insert_node(Direction.RIGHT, {
                 type: "square",
@@ -50,6 +98,7 @@ const FlowContent = ({ root, onUpdateNodes, change_handler_ref }: FlowContentPro
             })
         const dots = root
             .insert_node(Direction.LEFT, {
+                id: "testtsss",
                 type: "image",
                 data: {
                     image: single_iteration_img,
@@ -67,14 +116,14 @@ const FlowContent = ({ root, onUpdateNodes, change_handler_ref }: FlowContentPro
                 type: "dots",
                 data: {
                 },
-                offset: { x: -300, y: 0 }
+                //offset: { x: -300, y: 0 }
             })
         dots
             .insert_node(Direction.DOWN, {
                 type: "square",
                 data: {
                     name: "test 1"
-                }
+                },
             })
         dots
             .insert_node(Direction.DOWN, {
@@ -82,37 +131,75 @@ const FlowContent = ({ root, onUpdateNodes, change_handler_ref }: FlowContentPro
                 data: {
                     image: single_iteration_img,
                     text: "test 2"
-                }
+                },
             })
         dots
             .insert_node(Direction.DOWN, {
                 type: "square",
                 data: {
                     name: "test 3"
-                }
+                },
             })
         dots
             .insert_node(Direction.UP, {
                 type: "square",
                 data: {
                     name: "test 1"
-                }
+                },
+                offset: { x: 0, y: -50 }
             })
         dots
             .insert_node(Direction.UP, {
                 type: "square",
                 data: {
                     name: "test 1"
-                }
+                },
+                offset: { x: 0, y: -50 }
             })
-        dots
+        const test1 = dots
             .insert_node(Direction.UP, {
                 type: "square",
                 data: {
                     name: "test 3"
-                }
+                },
+                offset: { x: 0, y: -50 }
             })
-        dots
+        test1
+            .insert_node(Direction.UP, {
+                type: "square",
+                data: {
+                    name: "test"
+                },
+                reverse_edge: true,
+            })
+        test1
+            .insert_node(Direction.UP, {
+                type: "image",
+                data: {
+                    image: single_iteration_img,
+                    text: "test"
+                },
+                offset: { x: 0, y: -20 },
+                reverse_edge: true
+            })
+        test1
+            .insert_node(Direction.UP, {
+                type: "image",
+                data: {
+                    image: single_iteration_img,
+                    text: "test"
+                },
+                offset: { x: 0, y: -20 },
+                reverse_edge: true
+            })
+        test1
+            .insert_node(Direction.UP, {
+                type: "square",
+                data: {
+                    name: "test"
+                },
+                reverse_edge: true
+            })
         const last_iteration_node = dots
             .insert_node(Direction.LEFT, {
                 type: "image",
@@ -133,20 +220,17 @@ const FlowContent = ({ root, onUpdateNodes, change_handler_ref }: FlowContentPro
                 type: 'square',
                 data: {
                     name: "Text Embeddings Relevance Scores"
-                }
+                },
+                offset: { x: 0, y: 120 }
             })
-        const rgb_node = last_iteration_node
-            .insert_node(Direction.LEFT, {
-                type: 'rgb',
-                data: {
-                }
-            })
+        const rgb_node = build_rgb(last_iteration_node, _graph);
         last_iteration_node
             .insert_node(Direction.LEFT, {
                 type: 'square',
                 data: {
                     name: "test3"
-                }
+                },
+                offset: { x: 0, y: -120 }
             })
         rgb_node
             .insert_node(Direction.LEFT, {
@@ -155,44 +239,21 @@ const FlowContent = ({ root, onUpdateNodes, change_handler_ref }: FlowContentPro
                     name: "Previous Pred Noise"
                 }
             })
-        onUpdateNodes();
-        change_handler_ref.current = () => {
-            fitView();
-        };
-    }, [root])
-    return (
-        <>
-            <Background id="bg-2" />
-            <Controls
-                showInteractive={false}
-                showZoom={false}
-                className={styles.controls}
-            />
-        </>
-
-    )
-}
-
-const SDInputs = () => {
-    const graph = useMemo(() => new FlowGraph({
-        type: 'circle',
-        data: {
-            name: "Final Pred Noise"
-        }
-    }), [])
+        return _graph;
+    }, [])
     const [edges, setEdges] = useState<Array<Edge>>([]);
     const [nodes, setNodes] = useState<Array<Node>>([]);
     const prev_changes = useRef<NodeChange[]>([]);
-    const change_handler_ref = useRef<any>(null);
+    useEffect(() => {
+        setEdges(graph.build_edges());
+        setNodes(graph.build_nodes());
+    }, [graph])
     const handle_click = useCallback((_: any, node: any) => {
         switch (node.id) {
             default: break;
         }
     }, [])
-    const onNodesChange = (changes: NodeChange[]) => {
-        if (change_handler_ref.current) {
-            change_handler_ref.current();
-        }
+    const handleNodesChange = useCallback((changes: NodeChange[]) => {
         if (changes.length != prev_changes.current.length ||
             changes.every((item, index: number) => item != changes[index])) {
             prev_changes.current = changes;
@@ -200,9 +261,9 @@ const SDInputs = () => {
             setNodes(graph.build_nodes());
             setEdges(graph.build_edges());
         }
-    }
-    const handleUpdateNodes = () => {
-        setNodes(graph.build_nodes())
+    }, [])
+    const handleInit = (instance: ReactFlowInstance<Node, Edge>) => {
+        instance.fitView();
     }
     return (
         <div className={styles.wrapper}>
@@ -212,7 +273,8 @@ const SDInputs = () => {
                 edgeTypes={EDGE_TYPES}
                 nodes={nodes}
                 edges={edges}
-                onNodesChange={onNodesChange}
+                onNodesChange={handleNodesChange}
+                onInit={handleInit}
                 nodesDraggable={false}
                 zoomOnScroll={true}
                 nodesConnectable={false}
@@ -221,10 +283,15 @@ const SDInputs = () => {
                 zoomOnDoubleClick={false}
                 fitView
             >
-                <FlowContent root={graph.root} change_handler_ref={change_handler_ref} onUpdateNodes={handleUpdateNodes} />
+                <Background id="bg-2" />
+                <Controls
+                    showInteractive={false}
+                    showZoom={false}
+                    className={styles.controls}
+                />
             </ReactFlow>
         </div>
     )
 }
 
-export default SDInputs;
+export default ExampleFlowDiagram;

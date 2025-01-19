@@ -1,8 +1,10 @@
 type FlowEdgeProps = Readonly<{
+  id?: string;
   source: string;
   target: string;
   targetHandle: string;
   sourceHandle: string;
+  disabled?: boolean;
   animated?: boolean;
 }>
 export default class FlowEdge {
@@ -13,15 +15,18 @@ export default class FlowEdge {
   #animated: boolean = true;
   #sourceHandle: string;
   #targetHandle: string;
+  #disabled: boolean;
   constructor(props: FlowEdgeProps) {
-    this.#id = crypto.randomUUID();
+    this.#id = props.id ?? crypto.randomUUID();
     this.#source = props.source;
     this.#target = props.target;
     this.#targetHandle = props.targetHandle;
     this.#sourceHandle = props.sourceHandle;
-    if (props.animated) {
-      this.#animated = props.animated;
-    }
+    this.#animated = props.animated ?? true;
+    this.#disabled = props.disabled ?? false;
+  }
+  get disabled() {
+    return this.#disabled;
   }
   get id() {
     return this.#id;

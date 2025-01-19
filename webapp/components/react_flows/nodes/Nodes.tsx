@@ -9,7 +9,7 @@ const Handles = memo(({ id, left = 'source', right = 'target', top = 'target', b
     return (
         <>
             {
-                (
+                !disable_right && (
                     <Handle
                         id={`${id}-right`}
                         type={right}
@@ -18,7 +18,7 @@ const Handles = memo(({ id, left = 'source', right = 'target', top = 'target', b
                 )
             }
             {
-                (
+                !disable_left && (
                     <Handle
                         id={`${id}-left`}
                         type={left}
@@ -27,7 +27,7 @@ const Handles = memo(({ id, left = 'source', right = 'target', top = 'target', b
                 )
             }
             {
-                (
+                !disable_top && (
                     <Handle
                         id={`${id}-top`}
                         type={top}
@@ -36,7 +36,7 @@ const Handles = memo(({ id, left = 'source', right = 'target', top = 'target', b
                 )
             }
             {
-                (
+                !disable_bottom && (
                     <Handle
                         id={`${id}-bottom`}
                         type={bottom}
@@ -64,7 +64,7 @@ const ImageNode = memo(({ data }: any) => {
         <Card className={`${styles.node} dark ${styles.image_node}`} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
             <Handles disable_left disable_right {...data} />
             <CardBody>
-                <NextImage src={data.image} alt='' />
+                <NextImage src={data.image} alt='' className={styles.image_node_image} />
             </CardBody>
             {
                 data?.text && (

@@ -1,6 +1,7 @@
 import { AnimatedImageEdge } from "@/components/react_flows/edges/AnimatedImageEdge";
 import { CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import FlowEdge from "./FlowEdge";
 
 export type Coords = Readonly<{
   x: number;
@@ -95,28 +96,47 @@ export interface NodeData {
     name: string;
   };
   rgb: BaseData & {};
-  pixel: BaseData & {};
+  pixel: BaseData & {
+    name: string;
+    color: string;
+  };
   title: BaseData & {};
   subtitle: BaseData & {};
   image: BaseData & {
     image: string | StaticImport;
     text?: string;
     width?: string;
+    height?: string;
   };
   dots: BaseData & {};
   animated_image: BaseData & {};
 }
 
+export type RectPadding = Readonly<{
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}>
+
 export type NodeType = Readonly<typeof NODE_TYPES>
 export type NodeTypeKey = Readonly<keyof NodeType>
 
 export type FlowNodeProps<T extends NodeTypeKey> = Readonly<{
+  id?: string;
   type: T;
   data: NodeData[T];
   width?: number;
   height?: number;
   position?: Coords;
-  padding?: Coords;
+  padding?: { top?: number, bottom?: number, left?: number, right?: number };
   offset?: Coords;
+  reverse_edge?: boolean;
+  disable_left_edge?: boolean;
+  disable_right_edge?: boolean;
+  disable_top_edge?: boolean;
+  disable_bottom_edge?: boolean;
+  parent_id?: string;
+  edge?: FlowEdge;
 }>
 
