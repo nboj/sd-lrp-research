@@ -268,7 +268,7 @@ const ExampleFlowDiagram = () => {
     return (
         <div className={styles.wrapper}>
             <ReactFlow
-                id="flow-3"
+                id="flow-100"
                 nodeTypes={NODE_TYPES}
                 edgeTypes={EDGE_TYPES}
                 nodes={nodes}

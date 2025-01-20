@@ -4,9 +4,6 @@ import styles from '@/components/react_flows/SDSingleIteration.module.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Direction, EDGE_TYPES, NODE_TYPES } from "@/lib/types";
 import FlowGraph from "@/lib/FlowGraph";
-import single_iteration_img from '@/public/single_generation/single_iteration.png';
-import final_output from '@/public/single_iteration/less_noise.png';
-import input_noise from '@/public/single_generation/noise_test_results/noise-0.png';
 
 const SDSingleIteration = () => {
     const graph = useMemo(() => {
@@ -15,6 +12,7 @@ const SDSingleIteration = () => {
             data: {
                 name: "Retrieve Tensors From Files"
             },
+            padding: { bottom: 100 },
         })
         const root = _graph.root
         const activations = root
@@ -60,7 +58,8 @@ const SDSingleIteration = () => {
         const box = prev_scores
             .insert_node(Direction.DOWN, {
                 type: "rgb",
-                data: {}
+                data: {},
+                padding: { top: 200 },
             })
         box
             .insert_node(Direction.DOWN, {

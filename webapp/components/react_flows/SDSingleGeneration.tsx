@@ -2,11 +2,37 @@
 import { Background, Node, ReactFlow, Controls, NodeChange, Edge, ReactFlowInstance } from "@xyflow/react";
 import styles from '@/components/react_flows/SDSingleGeneration.module.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Direction, EDGE_TYPES, NODE_TYPES } from "@/lib/types";
+import { Direction, EDGE_TYPES, NODE_TYPES, NodeTypeKey } from "@/lib/types";
 import FlowGraph from "@/lib/FlowGraph";
 import single_iteration_img from '@/public/single_generation/single_iteration.png';
 import final_output from '@/public/single_iteration/less_noise.png';
 import input_noise from '@/public/single_generation/noise_test_results/noise-0.png';
+import FlowNode from "@/lib/FlowNode";
+
+const add_row = (root: FlowNode, dir: Direction, starting_index: number, type?: NodeTypeKey, data?: any, props?: any): FlowNode => {
+    let prev = root
+        .insert_node(Direction.DOWN, {
+            type: type ?? "image",
+            data: data ?? {
+                text: `Iteration ${starting_index}`,
+                image: single_iteration_img
+            },
+            ...props
+        })
+    for (let i = 0; i < 4; i++) {
+        prev = prev
+            .insert_node(dir, {
+                type: type ?? "image",
+                data: data ?? {
+                    text: `Iteration ${i + starting_index + 1}`,
+                    image: single_iteration_img
+                },
+                ...props,
+                offset: { x: 0, y: 0 }
+            })
+    }
+    return prev;
+}
 
 const SDSingleGeneration = () => {
     const graph = useMemo(() => {
@@ -29,174 +55,12 @@ const SDSingleGeneration = () => {
                 },
                 disable_bottom_edge: true,
             })
-        root
-            .insert_node(Direction.DOWN, {
-                type: 'image',
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img
-                }
-            })
-            .insert_node(Direction.RIGHT, {
-                type: 'image',
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img
-                }
-            })
-            .insert_node(Direction.RIGHT, {
-                type: 'image',
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img
-                }
-            })
-            .insert_node(Direction.RIGHT, {
-                type: 'image',
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img
-                }
-            })
-            .insert_node(Direction.RIGHT, {
-                type: 'image',
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img
-                }
-            })
-            .insert_node(Direction.DOWN, {
-                type: 'image',
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img
-                }
-            })
-            .insert_node(Direction.LEFT, {
-                type: 'image',
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img
-                }
-            })
-            .insert_node(Direction.LEFT, {
-                type: 'image',
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img
-                }
-            })
-            .insert_node(Direction.LEFT, {
-                type: 'image',
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img
-                }
-            })
-            .insert_node(Direction.LEFT, {
-                type: 'image',
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img
-                }
-            })
-            .insert_node(Direction.DOWN, {
-                type: 'dots',
-                data: {},
-                padding: { right: 45 },
-                offset: { x: 50, y: 0 }
-            })
-            .insert_node(Direction.RIGHT, {
-                type: 'dots',
-                data: {},
-                padding: { right: 45 },
-            })
-            .insert_node(Direction.RIGHT, {
-                type: 'dots',
-                data: {},
-                padding: { right: 45 },
-            })
-            .insert_node(Direction.RIGHT, {
-                type: 'dots',
-                data: {},
-                padding: { right: 45 },
-            })
-            .insert_node(Direction.RIGHT, {
-                type: 'dots',
-                data: {},
-                padding: { right: 45 },
-            })
-            .insert_node(Direction.DOWN, {
-                type: "image",
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img,
-                },
-                offset: { x: 50, y: 0 }
-            })
-            .insert_node(Direction.LEFT, {
-                type: "image",
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img,
-                },
-            })
-            .insert_node(Direction.LEFT, {
-                type: "image",
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img,
-                },
-            })
-            .insert_node(Direction.LEFT, {
-                type: "image",
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img,
-                },
-            })
-            .insert_node(Direction.LEFT, {
-                type: "image",
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img,
-                },
-            })
-            .insert_node(Direction.DOWN, {
-                type: "image",
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img,
-                },
-            })
-            .insert_node(Direction.RIGHT, {
-                type: "image",
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img,
-                },
-            })
-            .insert_node(Direction.RIGHT, {
-                type: "image",
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img,
-                },
-            })
-            .insert_node(Direction.RIGHT, {
-                type: "image",
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img,
-                },
-            })
-            .insert_node(Direction.RIGHT, {
-                type: "image",
-                data: {
-                    text: "Iteration 1",
-                    image: single_iteration_img,
-                },
-            })
+        let prev = add_row(root, Direction.RIGHT, 1);
+        prev = add_row(prev, Direction.LEFT, 6);
+        prev = add_row(prev, Direction.RIGHT, 0, "dots", {}, { padding: { right: 45 }, offset: { x: 50, y: 0 } });
+        prev = add_row(prev, Direction.LEFT, 41, undefined, undefined, { offset: { x: 50, y: 0 } });
+        prev = add_row(prev, Direction.RIGHT, 46);
+        prev
             .insert_node(Direction.DOWN, {
                 type: "image",
                 data: {
@@ -215,7 +79,7 @@ const SDSingleGeneration = () => {
         setEdges(graph.build_edges());
         setNodes(graph.build_nodes());
     }, [graph])
-    const handle_click = useCallback((_: any, node: any) => {
+    const handle_click = useCallback((_: React.MouseEvent, node: Node) => {
         switch (node.id) {
             default: break;
         }
@@ -235,7 +99,7 @@ const SDSingleGeneration = () => {
     return (
         <div className={styles.wrapper}>
             <ReactFlow
-                id="flow-3"
+                id="flow-4"
                 nodeTypes={NODE_TYPES}
                 edgeTypes={EDGE_TYPES}
                 nodes={nodes}
