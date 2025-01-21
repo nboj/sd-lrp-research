@@ -8,9 +8,7 @@ const Loading = () => {
       {
         Array.from(Array(10)).map((_: number, index: number) => {
           return (
-            <div key={`${index}-skel`} className={styles.skeleton}>
-              hello
-            </div>
+            <Skeleton key={`${index}-skel`} className={styles.skeleton}></Skeleton>
           )
         })
       }

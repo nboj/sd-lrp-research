@@ -5,7 +5,6 @@ import Loading from './loading';
 export const dynamic = 'force-static'
 
 export default function Home() {
-  return <Loading />
   return (
     <main>
       <ListGenerationServer />
