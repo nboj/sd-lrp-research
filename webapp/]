@@ -64,7 +64,7 @@ const SDSingleGeneration = () => {
                 data: {},
                 offset: { x: 400, y: 0 }
             })
-        prev = add_row(prev, Direction.LEFT, 41, undefined, undefined, { offset: { x: 365, y: 0 } });
+        prev = add_row(prev, Direction.LEFT, 41, undefined, undefined, { offset: { x: 380, y: 0 } });
         prev = add_row(prev, Direction.RIGHT, 46);
         prev
             .insert_node(Direction.DOWN, {
