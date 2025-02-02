@@ -5,7 +5,7 @@ import SingleIteration from '@/components/react_flows/SingleIteration';
 import SingleGeneration from '@/components/react_flows/SingleGeneration';
 import ExampleFlowDiagram from '@/components/react_flows/ExampleFlowDiagram';
 import SDSingleGeneration from '@/components/react_flows/SDSingleGeneration';
-import SDSingleIteration from '@/components/react_flows/SDSingleIteration';
+import LRPSingleIteration from '@/components/react_flows/LRPSingleIteration';
 import TestingExample from '@/components/react_flows/TestingExample';
 
 type BlockProps = Readonly<{
@@ -54,7 +54,7 @@ const About = () => {
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique. Etiam velit mauris, tempor ac neque vel, mollis rhoncus magna. Ut tempus vulputate tristique. Donec tristique quis orci at mattis. Aenean varius ullamcorper risus, eget interdum augue dictum in.</p>
           <SDSingleGeneration />
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique. Etiam velit mauris, tempor ac neque vel, mollis rhoncus magna. Ut tempus vulputate tristique. Donec tristique quis orci at mattis. Aenean varius ullamcorper risus, eget interdum augue dictum in.</p>
-          <SDSingleIteration />
+          <LRPSingleIteration />
         </Block>
         <Block>
           <h3>Example Flow Diagram</h3>

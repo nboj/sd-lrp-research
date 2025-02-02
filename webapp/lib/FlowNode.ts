@@ -51,7 +51,7 @@ export default class FlowNode {
     this.#parent_id = props.parent_id;
   }
   insert_node(dir: Direction, props: FlowNodeProps<NodeTypeKey>): FlowNode {
-    let new_node = new FlowNode({ ...props });
+    const new_node = new FlowNode({ ...props });
     new_node.#set_parent(this);
     this.#add_direction(new_node, dir);
     return new_node;
@@ -171,7 +171,7 @@ export default class FlowNode {
     return edge
   }
   #add_direction(node: FlowNode, dir: Direction) {
-    let edge = this.#get_edge(node, dir)
+    const edge = this.#get_edge(node, dir)
     switch (dir) {
       case Direction.UP:
         this.#up.push([node, !node.#disable_top_edge ? node.#edge ?? edge : undefined]);

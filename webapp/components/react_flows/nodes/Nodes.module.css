@@ -31,6 +31,17 @@
   border-radius: var(--node_br);
 }
 
+.box_node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--primary);
+  border: 2px solid var(--secondary);
+  padding: 10px;
+  z-index: 0;
+  border-radius: var(--node_br);
+}
+
 .node {
   transition: 0.1s ease-in-out;
 }

@@ -26,19 +26,19 @@ export default class FlowGraph {
   }
   build_nodes(): Array<Node> {
     this.#root_node.position = { x: this.#root_node.position.x + this.#root_node.offset.x, y: this.#root_node.position.y + this.#root_node.offset.y };
-    let nodes = this.#build_nodes(this.#root_node);
+    const nodes = this.#build_nodes(this.#root_node);
     for (let i = 0; i < this.#custom_nodes.length; i++) {
       this.#custom_nodes[i].position = { x: this.#custom_nodes[i].position.x + this.#custom_nodes[i].offset.x, y: this.#custom_nodes[i].position.y + this.#custom_nodes[i].offset.y };
       nodes.push(...this.#build_nodes(this.#custom_nodes[i]));
     }
-    let final: Array<Node> = []
+    const final: Array<Node> = []
     for (let i = 0; i < nodes.length; i++) {
       final.push(this.#build_node(nodes[i]));
     }
     return final
   }
   build_edges(): Array<Edge> {
-    let edges = this.#build_edges(this.#root_node);
+    const edges = this.#build_edges(this.#root_node);
     for (let i = 0; i < this.#custom_nodes.length; i++) {
       edges.push(...this.#build_edges(this.#custom_nodes[i]))
     }
@@ -53,41 +53,41 @@ export default class FlowGraph {
   #find_node(id: string, from_node: FlowNode): FlowNode | null {
     let found = null;
     for (let i = 0; i < this.#custom_nodes.length; i++) {
-      found = this.#_find_node(id, this.#custom_nodes[i]);
+      found = this.#find_node_(id, this.#custom_nodes[i]);
       if (found) {
         return found;
       }
     }
-    return this.#_find_node(id, from_node);
+    return this.#find_node_(id, from_node);
   }
-  #_find_node(id: string, from_node: FlowNode): FlowNode | null {
+  #find_node_(id: string, from_node: FlowNode): FlowNode | null {
     if (from_node.id == id) {
       return from_node;
     }
     for (let i = 0; i < from_node.left.length; i++) {
       const [child, _] = from_node.left[i];
-      const res = this.#_find_node(id, child);
+      const res = this.#find_node_(id, child);
       if (res) {
         return res;
       }
     }
     for (let i = 0; i < from_node.right.length; i++) {
       const [child, _] = from_node.right[i];
-      const res = this.#_find_node(id, child);
+      const res = this.#find_node_(id, child);
       if (res) {
         return res;
       }
     }
     for (let i = 0; i < from_node.up.length; i++) {
       const [child, _] = from_node.up[i];
-      const res = this.#_find_node(id, child);
+      const res = this.#find_node_(id, child);
       if (res) {
         return res;
       }
     }
     for (let i = 0; i < from_node.down.length; i++) {
       const [child, _] = from_node.down[i];
-      const res = this.#_find_node(id, child);
+      const res = this.#find_node_(id, child);
       if (res) {
         return res;
       }
@@ -250,40 +250,40 @@ export default class FlowGraph {
     }
   }
   #build_nodes(from_node: FlowNode): Array<FlowNode> {
-    let final: Array<FlowNode> = [from_node];
+    const final: Array<FlowNode> = [from_node];
     for (let i = 0; i < from_node.left.length; i++) {
-      let [child, _] = from_node.left[i];
+      const [child, _] = from_node.left[i];
       child.position = this.#get_position(child, Direction.LEFT);
     }
     for (let i = 0; i < from_node.right.length; i++) {
-      let [child, _] = from_node.right[i];
+      const [child, _] = from_node.right[i];
       child.position = this.#get_position(child, Direction.RIGHT);
     }
     for (let i = 0; i < from_node.up.length; i++) {
-      let [child, _] = from_node.up[i];
+      const [child, _] = from_node.up[i];
       child.position = this.#get_position(child, Direction.UP);
     }
     for (let i = 0; i < from_node.down.length; i++) {
-      let [child, _] = from_node.down[i];
+      const [child, _] = from_node.down[i];
       child.position = this.#get_position(child, Direction.DOWN);
     }
     this.#center_children(from_node)
 
     // recursively build children
     for (let i = 0; i < from_node.left.length; i++) {
-      let [child, _] = from_node.left[i];
+      const [child, _] = from_node.left[i];
       final.push(...this.#build_nodes(child));
     }
     for (let i = 0; i < from_node.right.length; i++) {
-      let [child, _] = from_node.right[i];
+      const [child, _] = from_node.right[i];
       final.push(...this.#build_nodes(child));
     }
     for (let i = 0; i < from_node.up.length; i++) {
-      let [child, _] = from_node.up[i];
+      const [child, _] = from_node.up[i];
       final.push(...this.#build_nodes(child));
     }
     for (let i = 0; i < from_node.down.length; i++) {
-      let [child, _] = from_node.down[i];
+      const [child, _] = from_node.down[i];
       final.push(...this.#build_nodes(child));
     }
     return final;
@@ -296,11 +296,12 @@ export default class FlowGraph {
       animated: edge.animated,
       targetHandle: edge.targetHandle,
       sourceHandle: edge.sourceHandle,
+      zIndex: 100,
       hidden: edge.disabled,
     }
   }
   #build_edges(from_node: FlowNode): Array<Edge> {
-    let final: Array<Edge> = [];
+    const final: Array<Edge> = [];
     for (let i = 0; i < from_node.custom_edges.length; i++) {
       const edge = from_node.custom_edges[i]
       if (edge) {
@@ -308,7 +309,7 @@ export default class FlowGraph {
       }
     }
     for (let i = 0; i < from_node.left.length; i++) {
-      let [child, edge] = from_node.left[i];
+      const [child, edge] = from_node.left[i];
       if (edge) {
         final.push(this.#build_edge(edge), ...this.#build_edges(child));
       } else {
@@ -316,7 +317,7 @@ export default class FlowGraph {
       }
     }
     for (let i = 0; i < from_node.right.length; i++) {
-      let [child, edge] = from_node.right[i];
+      const [child, edge] = from_node.right[i];
       if (edge) {
         final.push(this.#build_edge(edge), ...this.#build_edges(child));
       } else {
@@ -324,7 +325,7 @@ export default class FlowGraph {
       }
     }
     for (let i = 0; i < from_node.up.length; i++) {
-      let [child, edge] = from_node.up[i];
+      const [child, edge] = from_node.up[i];
       if (edge) {
         final.push(this.#build_edge(edge), ...this.#build_edges(child));
       } else {
@@ -332,7 +333,7 @@ export default class FlowGraph {
       }
     }
     for (let i = 0; i < from_node.down.length; i++) {
-      let [child, edge] = from_node.down[i];
+      const [child, edge] = from_node.down[i];
       if (edge) {
         final.push(this.#build_edge(edge), ...this.#build_edges(child));
       } else {

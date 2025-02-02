@@ -1,7 +1,8 @@
 import { AnimatedImageEdge } from "@/components/react_flows/edges/AnimatedImageEdge";
-import { CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
+import { BoxNode, CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import FlowEdge from "./FlowEdge";
+import { CSSProperties } from "react";
 
 export type Coords = Readonly<{
   x: number;
@@ -73,6 +74,7 @@ export const NODE_TYPES = {
   image: ImageNode,
   dots: Dots,
   animated_image: ImageAnimation,
+  box: BoxNode,
 }
 
 type HandleType = "source" | "target";
@@ -91,6 +93,7 @@ type BaseData = {
 export interface NodeData {
   square: BaseData & {
     name: string;
+    style: CSSProperties;
   };
   circle: BaseData & {
     name: string;
@@ -110,6 +113,11 @@ export interface NodeData {
   };
   dots: BaseData & {};
   animated_image: BaseData & {};
+  box: BaseData & {
+    name: string;
+    width?: string;
+    height?: string;
+  };
 }
 
 export type RectPadding = Readonly<{

@@ -80,7 +80,7 @@ ImageNode.displayName = 'ImageNode'
 
 const SquareNode = memo(({ data }: any) => {
     return (
-        <div className={`${styles.node} ${styles.square_node}`}>
+        <div className={`${styles.node} ${styles.square_node}`} style={{ ...data.style }}>
             <h2>{data.name}</h2>
             <Handles {...data} />
         </div>
@@ -98,6 +98,15 @@ const PixelNode = memo(({ data }: any) => {
 })
 PixelNode.displayName = 'PixelNode'
 
+const BoxNode = memo(({ data }: any) => {
+    return (
+        <div className={`${styles.box_node}`} style={{ width: data.width, height: data.height }}>
+            <h1>{data.name}</h1>
+            <Handles {...data} />
+        </div>
+    )
+})
+BoxNode.displayName = 'BoxNode'
 const RGBNode = memo(({ data }: any) => {
     return (
         <div className={`${styles.rgb_node}`}>
@@ -240,4 +249,4 @@ const ImageAnimation = memo(({ data }: any) => {
 })
 ImageAnimation.displayName = "ImageAnimation";
 
-export { CircleNode, SquareNode, ImageNode, PixelNode, RGBNode, TitleText, SubtitleText, Dots, ImageAnimation };
+export { CircleNode, SquareNode, ImageNode, PixelNode, RGBNode, TitleText, SubtitleText, Dots, ImageAnimation, BoxNode };

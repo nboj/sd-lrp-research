@@ -432,7 +432,7 @@ const PopupBody = ({ node_id }: any) => {
 }
 PopupBody.displayName = 'PopupBody2';
 
-const SingleGeneration = () => {
+const SingleGeneration = ({ id }: { id?: string }) => {
     const [edges, , onEdgesChange] = useEdgesState(initial_edges);
     const [nodes, , onNodesChange] = useNodesState(initial_nodes);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -467,7 +467,7 @@ const SingleGeneration = () => {
                 <PopupBody node_id={selectedId} />
             </Popup>
             <ReactFlow
-                id="flow-2"
+                id={getId(id ?? "flow-2")}
                 nodeTypes={NODE_TYPES}
                 edgeTypes={EDGE_TYPES}
                 nodes={nodes}
