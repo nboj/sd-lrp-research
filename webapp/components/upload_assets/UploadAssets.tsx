@@ -1,8 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useActionState, useState } from 'react'
 import Image from 'next/image'
 import { upload } from '@/actions/file_actions'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useFormStatus } from 'react-dom'
 
 type Props = Readonly<{
     label: string;
@@ -20,7 +20,7 @@ const Collection = ({ label }: Props) => {
     };
     return (
         <div>
-            <label htmlFor={`${label}`}>Choose images to upload</label>
+            <label htmlFor={`${label}`}>Choose {label} images to upload</label>
             <input type='file' name={`${label}`} onChange={handleNoiseFileChange} multiple />
             <div className='flex w-full flex-wrap'>
                 {
@@ -47,20 +47,18 @@ const UploadButton = () => {
     )
 }
 const UploadAssets = () => {
-    const [state, action] = useFormState(upload, initialState)
+    const [state, action] = useActionState(upload, initialState)
+    console.log(state?.error.message, state)
     return (
         <form action={action}>
             <label htmlFor='prompt'>Enter the prompt used:</label>
             <input type='text' name='prompt' />
             <Collection label='noise' />
-            <Collection label='lrp1' />
-            <Collection label='lrp2' />
+            <Collection label='noise_pred' />
+            <Collection label='lrp_noise' />
+            <Collection label='lrp_text' />
             <UploadButton />
-            {
-                state?.error?.message && (
-                    <p>{state.error.message}</p>
-                )
-            }
+            <p>{state?.error?.message}</p>
         </form>
     )
 };

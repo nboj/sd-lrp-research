@@ -2,7 +2,7 @@
 import { Background, ReactFlow, Controls, useNodesState, useEdgesState } from "@xyflow/react";
 import styles from '@/components/react_flows/SingleGeneration.module.css';
 import { useCallback, useState } from "react";
-import { ModalHeader, useDisclosure } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Image, ModalBody, ModalHeader, useDisclosure } from "@nextui-org/react";
 import Popup from "@/components/popup/Popup";
 import { EDGE_TYPES, NODE_TYPES } from "@/lib/types";
 
@@ -28,8 +28,8 @@ const sortList = (list: any) => {
         return numB - numA;
     });
 }
-const lrps = importAll(require.context('@/public/single_generation/lrp_test_results', false, /\.(png|jpe?g|svg)$/));
-const noises = importAll(require.context('@/public/single_generation/noise_test_results', false, /\.(png|jpe?g|svg)$/));
+const lrps = importAll(require.context('../../public/single_generation/lrp_test_results/', false, /\.(png|jpe?g|svg)$/));
+const noises = importAll(require.context('../../public/single_generation/noise_test_results/', false, /\.(png|jpe?g|svg)$/));
 const lrp_frames = lrps.map((image: any) => image.default.src)
 const noise_frames = noises.map((image: any) => image.default.src)
 sortList(lrp_frames)
@@ -376,6 +376,54 @@ const initial_edges = [
 
 const PopupBody = ({ node_id }: any) => {
     switch (node_id) {
+        case getId("final_pred_noise"):
+            return (
+                <>
+                    <ModalHeader className="flex flex-col gap-1">Predicted Noise</ModalHeader>
+                    <ModalBody>
+                        <p>This represents the output prediction from the unet model. This prediction is then used to remove noise from the input which produces a less noisy result. (this example is exaggerated)</p>
+                        <div className='flex gap-2'>
+                            <Card isFooterBlurred>
+                                <CardHeader className="px-4">
+                                    <p className='font-bold'>Previous Input</p>
+                                </CardHeader>
+                                <CardBody className="justify-end">
+                                    <Image src={lrp1.src} alt='' className='rounded-xl' />
+                                </CardBody>
+                            </Card>
+                            <Card isFooterBlurred>
+                                <CardHeader className="px-4">
+                                    <p className='font-bold'>After Noise Removal</p>
+                                </CardHeader>
+                                <CardBody className="justify-end">
+                                    <Image src={lrp1.src} alt='' className='rounded-xl' />
+                                </CardBody>
+                            </Card>
+                        </div>
+                        <p>For relevance scores, either the final predicted noise from the generation or the relevance scores from the previous iteration are used as input to the LRP integration in any given iteration.</p>
+                        <p>(This image is a simplified and imperfect representation of the predicted noise)</p>
+                        <Card isFooterBlurred className="flex-shrink-0" >
+                            <CardHeader className="px-4">
+                                <p className='font-bold'>Final Predicted Noise</p>
+                            </CardHeader>
+                            <CardBody>
+                                <Image src={lrp1.src} alt='' className='rounded-xl' />
+                            </CardBody>
+                        </Card>
+                    </ModalBody>
+                </>
+            )
+        case getId("iter_49"):
+        case getId("iter_50"):
+        case getId("iter_1"):
+        case getId("iter_0"):
+        case getId("text_embeds"):
+        case getId("time_embeds"):
+        case getId("latents"):
+        case getId("rgb"):
+        case getId("pixel-1"):
+        case getId("pixel-2"):
+        case getId("pixel-3"):
         default:
             return (
                 <ModalHeader className="flex flex-col gap-1">Error.</ModalHeader>
@@ -384,14 +432,25 @@ const PopupBody = ({ node_id }: any) => {
 }
 PopupBody.displayName = 'PopupBody2';
 
-const SingleGeneration = () => {
+const SingleGeneration = ({ id }: { id?: string }) => {
     const [edges, , onEdgesChange] = useEdgesState(initial_edges);
     const [nodes, , onNodesChange] = useNodesState(initial_nodes);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [selectedId, setSelectedId] = useState<string>("")
     const handle_click = useCallback((_: any, node: any) => {
         switch (node.id) {
-            case "prev_pred_noise2":
+            case getId("final_pred_noise"):
+            case getId("iter_49"):
+            case getId("iter_50"):
+            case getId("iter_1"):
+            case getId("iter_0"):
+            case getId("text_embeds"):
+            case getId("time_embeds"):
+            case getId("latents"):
+            case getId("rgb"):
+            case getId("pixel-1"):
+            case getId("pixel-2"):
+            case getId("pixel-3"):
                 setSelectedId(node.id)
                 onOpen()
                 break;
@@ -408,7 +467,7 @@ const SingleGeneration = () => {
                 <PopupBody node_id={selectedId} />
             </Popup>
             <ReactFlow
-                id="flow-2"
+                id={getId(id ?? "flow-2")}
                 nodeTypes={NODE_TYPES}
                 edgeTypes={EDGE_TYPES}
                 nodes={nodes}

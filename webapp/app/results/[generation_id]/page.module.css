@@ -1,0 +1,24 @@
+.main {
+    width: 100%;
+    container: main-page / inline-size;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    position: relative;
+}
+
+.inner_container {
+    display: flex;
+    container-type: inline-size;
+    width: 100%;
+    position: relative;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 1;
+}
+
+@container main-page (max-width: 850px) {
+    .sidebar {
+        display: none !important;
+    }
+}

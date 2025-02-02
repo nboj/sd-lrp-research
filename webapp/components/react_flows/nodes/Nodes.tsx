@@ -1,15 +1,17 @@
+'use client'
 import { Handle, Position } from "@xyflow/react";
 import { memo, useEffect, useRef, useState } from "react";
 import NextImage from 'next/image';
 import styles from '@/components/react_flows/nodes/Nodes.module.css';
 import { Card, CardBody, CardFooter, Progress } from "@nextui-org/react";
 
-const Handles = memo(({ left = 'source', right = 'target', top = 'target', bottom = 'source', disable_left = false, disable_right = false, disable_top = true, disable_bottom = true }: any) => {
+const Handles = memo(({ id, left = 'source', right = 'target', top = 'target', bottom = 'source', disable_left = false, disable_right = false, disable_top = true, disable_bottom = true }: any) => {
     return (
         <>
             {
                 !disable_right && (
                     <Handle
+                        id={`${id}-right`}
                         type={right}
                         position={Position.Right}
                     />
@@ -18,6 +20,7 @@ const Handles = memo(({ left = 'source', right = 'target', top = 'target', botto
             {
                 !disable_left && (
                     <Handle
+                        id={`${id}-left`}
                         type={left}
                         position={Position.Left}
                     />
@@ -26,6 +29,7 @@ const Handles = memo(({ left = 'source', right = 'target', top = 'target', botto
             {
                 !disable_top && (
                     <Handle
+                        id={`${id}-top`}
                         type={top}
                         position={Position.Top}
                     />
@@ -34,6 +38,7 @@ const Handles = memo(({ left = 'source', right = 'target', top = 'target', botto
             {
                 !disable_bottom && (
                     <Handle
+                        id={`${id}-bottom`}
                         type={bottom}
                         position={Position.Bottom}
                     />
@@ -46,7 +51,7 @@ Handles.displayName = 'Handles'
 
 const CircleNode = memo(({ data }: any) => {
     return (
-        <div className={styles.circle_node}>
+        <div className={`${styles.node} ${styles.circle_node}`}>
             <Handles {...data} />
             <h2>{data.name}</h2>
         </div>
@@ -56,10 +61,10 @@ CircleNode.displayName = 'CircleNode'
 
 const ImageNode = memo(({ data }: any) => {
     return (
-        <Card className={`dark ${styles.image_node}`} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
+        <Card className={`${styles.node} dark ${styles.image_node}`} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
             <Handles disable_left disable_right {...data} />
             <CardBody>
-                <NextImage src={data.image} alt='' />
+                <NextImage src={data.image} alt='' className={styles.image_node_image} />
             </CardBody>
             {
                 data?.text && (
@@ -75,7 +80,7 @@ ImageNode.displayName = 'ImageNode'
 
 const SquareNode = memo(({ data }: any) => {
     return (
-        <div className={styles.square_node}>
+        <div className={`${styles.node} ${styles.square_node}`} style={{ ...data.style }}>
             <h2>{data.name}</h2>
             <Handles {...data} />
         </div>
@@ -85,7 +90,7 @@ SquareNode.displayName = 'SquareNode'
 
 const PixelNode = memo(({ data }: any) => {
     return (
-        <div className={styles.pixel_node} style={{ background: data.color }}>
+        <div className={`${styles.node} ${styles.pixel_node}`} style={{ background: data.color }}>
             {data.name}
             <Handles {...data} />
         </div>
@@ -93,9 +98,18 @@ const PixelNode = memo(({ data }: any) => {
 })
 PixelNode.displayName = 'PixelNode'
 
+const BoxNode = memo(({ data }: any) => {
+    return (
+        <div className={`${styles.box_node}`} style={{ width: data.width, height: data.height }}>
+            <h1>{data.name}</h1>
+            <Handles {...data} />
+        </div>
+    )
+})
+BoxNode.displayName = 'BoxNode'
 const RGBNode = memo(({ data }: any) => {
     return (
-        <div className={styles.rgb_node}>
+        <div className={`${styles.rgb_node}`}>
             <Handles {...data} />
         </div>
     )
@@ -104,7 +118,7 @@ RGBNode.displayName = 'RGBNode'
 
 const TitleText = memo(({ data }: any) => {
     return (
-        <div className={styles.title}>
+        <div className={`${styles.title}`}>
             <h1>{data.name}</h1>
             <Handles disable_left disable_right />
         </div>
@@ -114,7 +128,7 @@ TitleText.displayName = 'TitleText'
 
 const SubtitleText = memo(({ data }: any) => {
     return (
-        <div className={styles.subtitle}>
+        <div className={`${styles.subtitle}`}>
             <h2>{data.name}</h2>
             <Handles disable_left disable_right />
         </div>
@@ -124,7 +138,7 @@ SubtitleText.displayName = 'SubtitleText'
 
 const Dots = memo(({ data }: any) => {
     return (
-        <div className={styles.dots}>
+        <div className={`${styles.dots}`}>
             <h1>&bull;&bull;&bull;</h1>
             <Handles {...data} />
         </div>
@@ -219,7 +233,7 @@ const ImageAnimation = memo(({ data }: any) => {
         };
     }, [data.frames]);
     return (
-        <Card className="dark">
+        <Card className={`dark`}>
             <CardBody className="flex flex-row gap-2">
                 {
                     data.frames.map((_: any, idx: number) => (
@@ -235,4 +249,4 @@ const ImageAnimation = memo(({ data }: any) => {
 })
 ImageAnimation.displayName = "ImageAnimation";
 
-export { CircleNode, SquareNode, ImageNode, PixelNode, RGBNode, TitleText, SubtitleText, Dots, ImageAnimation };
+export { CircleNode, SquareNode, ImageNode, PixelNode, RGBNode, TitleText, SubtitleText, Dots, ImageAnimation, BoxNode };

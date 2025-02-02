@@ -41,6 +41,7 @@
 
 .lrp_heatmap_example {
   position: relative;
+  container: lrp_heatmap_example / inline-size;
   height: 100%;
   width: 25%;
   flex-shrink: 0;

@@ -1,12 +1,12 @@
 'use client'
 import styles from '@/components/navbar/Navbar.module.css';
-import Link from 'next/link';
+import Link from "@/components/ui/link/Link";
 import { FaInfoCircle } from "react-icons/fa";
 import { RiHammerFill } from "react-icons/ri";
 import { BsClipboard2PulseFill } from "react-icons/bs";
 import { usePathname } from 'next/navigation';
 import { BsGridFill } from "react-icons/bs";
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { Ref, useEffect, useMemo, useRef, useState } from 'react';
 import { IoClose } from "react-icons/io5";
 import { Link as LinkType } from '@/lib/types';
 import { motion } from 'framer-motion';
@@ -35,12 +35,17 @@ type LinkProps = Readonly<{
 }>
 const Navlink = ({ link, onClick }: LinkProps) => {
     const pathname = usePathname();
+    const active = useMemo(() => {
+        if (pathname === link.href) return true
+        else if (link.href !== '/' && pathname.startsWith(link.href)) return true
+        return false
+    }, [pathname])
     const handle_click = (_: React.MouseEvent) => {
         onClick();
     }
     return (
         <li>
-            <Link className={`${styles.link} ${pathname == link.href && styles.active}`} href={link.href} onClick={handle_click}>
+            <Link className={`${styles.link} ${active && styles.active}`} href={link.href} onClick={handle_click}>
                 {link.icon}{link.name}
             </Link>
         </li>
@@ -51,6 +56,7 @@ Navlink.displayName = 'NavLink'
 type MenuProps = Readonly<{
     onClose: () => void;
     open: boolean;
+    ref: Ref<HTMLDivElement>;
 }>
 const variants = {
     init: {
@@ -81,7 +87,7 @@ const variants = {
         }
     }
 }
-const Menu = forwardRef(({ onClose, open }: MenuProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Menu = ({ onClose, open, ref }: MenuProps) => {
     const handle_click = () => {
         onClose();
     }
@@ -95,7 +101,7 @@ const Menu = forwardRef(({ onClose, open }: MenuProps, ref: React.ForwardedRef<H
                 animate={open ? 'open' : 'init'}
             >
                 <div className={styles.menu_bar}>
-                    <p className={styles.nav_title}>SD LRP</p>
+                    <Link className={styles.nav_title} href='/'>SD LRP</Link>
                     <IoClose className={styles.close_button} onClick={handle_click} />
                 </div>
                 <ul className={styles.small_links_container}>
@@ -108,7 +114,7 @@ const Menu = forwardRef(({ onClose, open }: MenuProps, ref: React.ForwardedRef<H
             </motion.div >
         </div>
     )
-})
+}
 Menu.displayName = 'Menu'
 
 const Navbar = () => {
@@ -131,7 +137,7 @@ const Navbar = () => {
     }
     return (
         <nav className={styles.nav}>
-            <p className={styles.nav_title}>SD LRP</p>
+            <Link href='/' className={styles.nav_title}>SD LRP</Link>
             <ul className={styles.links_container}>
                 {
                     links.map((link: LinkType, index: number) => (

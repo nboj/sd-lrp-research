@@ -1,4 +1,5 @@
 'use client'
+import GeneralProvider from "@/providers/GeneralProvider";
 import { NextUIProvider } from "@nextui-org/react";
 
 type ProvidersProps = Readonly<{
@@ -8,7 +9,9 @@ const Providers = ({ children }: ProvidersProps) => {
     return (
         <>
             <NextUIProvider>
-                {children}
+                <GeneralProvider>
+                    {children}
+                </GeneralProvider>
             </NextUIProvider>
         </>
     )

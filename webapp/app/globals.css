@@ -1,11 +1,11 @@
+@import '@xyflow/react/dist/style.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import '@xyflow/react/dist/style.css';
 
 :root {
-  --background: #0F0F0F;
-  --foreground: #F1F1F1;
+  --background: #151515;
+  --foreground: #DCDCDC;
   --primary: #272727;
   --secondary: #4B4B4B;
   --node_br: 12px;
@@ -30,6 +30,7 @@ body>div {
 }
 
 main {
+  position: relative;
   height: 100%;
   width: 100%;
   display: flex;
@@ -65,6 +66,10 @@ p {
 .react-flow__attribution {
   background: none;
   margin: 5px;
+}
+
+.recharts-tooltip-cursor {
+  fill: var(--primary);
 }
 
 @media (max-width: 860px) {
