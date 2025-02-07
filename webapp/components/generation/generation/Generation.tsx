@@ -66,7 +66,7 @@ const Generation = ({ generation }: Props) => {
             name: text[index],
             value: item / generation.iterations.length
         }))
-        let max = Math.ceil(final_data.reduce((a: any, b: any) => isNaN(a) ? Math.max(Math.abs(a.value), Math.abs(b.value)) : Math.max(Math.abs(a), Math.abs(b.value))) * 1000) / 1000
+        const max = Math.ceil(final_data.reduce((a: any, b: any) => isNaN(a) ? Math.max(Math.abs(a.value), Math.abs(b.value)) : Math.max(Math.abs(a), Math.abs(b.value))) * 1000) / 1000
         for (let i = 0; i < final_data.length; i++) {
             final_data[i].value = mapRange(final_data[i].value, -max, max, -100, 100);
         }
