@@ -20,12 +20,18 @@
   gap: 8px;
   padding: 5px;
   font-size: 16px;
+  border-radius: 9px;
   font-weight: 500;
 }
 
 .active {
   background-color: var(--primary);
-  border-radius: 9px;
+}
+
+.disabled {
+  cursor: default;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--primary), white 10%);
 }
 
 .nav_title {

@@ -8,7 +8,7 @@ type Props = Readonly<{
     min?: number;
     max?: number;
 }>
-const LRPText = ({ generation, values, className, min = -5, max = 5 }: Props) => {
+const LRPText = ({ generation, values, className, min = -1, max = 1 }: Props) => {
     return (
         <p className={className}>
             {

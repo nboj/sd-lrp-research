@@ -11,7 +11,7 @@ import { IoClose } from "react-icons/io5";
 import { Link as LinkType } from '@/lib/types';
 import { motion } from 'framer-motion';
 
-const links = [
+const links: LinkType[] = [
     {
         name: "About",
         href: "/",
@@ -20,7 +20,8 @@ const links = [
     {
         name: "Unet Architecture",
         href: "/unet",
-        icon: <RiHammerFill />
+        icon: <RiHammerFill />,
+        disabled: true,
     },
     {
         name: "Results",
@@ -45,7 +46,7 @@ const Navlink = ({ link, onClick }: LinkProps) => {
     }
     return (
         <li>
-            <Link className={`${styles.link} ${active && styles.active}`} href={link.href} onClick={handle_click}>
+            <Link className={`${styles.link} ${active && styles.active} ${link.disabled && styles.disabled}`} href={link.href} onClick={handle_click}>
                 {link.icon}{link.name}
             </Link>
         </li>

@@ -55,8 +55,10 @@ const UploadAssets = () => {
             <input type='text' name='prompt' />
             <Collection label='noise' />
             <Collection label='noise_pred' />
-            <Collection label='lrp_noise' />
-            <Collection label='lrp_text' />
+            <Collection label='lrp_noise1' />
+            <Collection label='lrp_noise2' />
+            <Collection label='text_key_scores' />
+            <Collection label='text_value_scores' />
             <UploadButton />
             <p>{state?.error?.message}</p>
         </form>
