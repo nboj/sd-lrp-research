@@ -1,0 +1,16 @@
+.wrapper {
+    width: 100%;
+    height: 30rem;
+    border-radius: 16px;
+    border: 2px solid var(--secondary);
+  }
+  
+  .controls {
+    & button {
+      background: none;
+  
+      &:hover {
+        background: none;
+      }
+    }
+  }

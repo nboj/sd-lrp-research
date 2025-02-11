@@ -1,5 +1,5 @@
 import { AnimatedImageEdge } from "@/components/react_flows/edges/AnimatedImageEdge";
-import { BoxNode, CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
+import { BoxNode, CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, RGBNodeAlt, SquareNode, SquareNodeWrap, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import FlowEdge from "./FlowEdge";
 import { CSSProperties } from "react";
@@ -68,86 +68,13 @@ export const EDGE_TYPES = {
 }
 
 export const NODE_TYPES = {
-    square: SquareNode,
-    circle: CircleNode,
-    rgb: RGBNode,
-    pixel: PixelNode,
-    title: TitleText,
-    subtitle: SubtitleText,
-    image: ImageNode,
-    dots: Dots,
-    animated_image: ImageAnimation,
-    box: BoxNode,
+  square: SquareNode,
+  circle: CircleNode,
+  rgb: RGBNode,
+  pixel: PixelNode,
+  title: TitleText,
+  subtitle: SubtitleText,
+  image: ImageNode,
+  dots: Dots,
+  animated_image: ImageAnimation,
 }
-
-type HandleType = "source" | "target";
-
-type BaseData = {
-    id?: string;
-    disable_left?: boolean;
-    disable_right?: boolean;
-    disable_top?: boolean;
-    disable_bottom?: boolean;
-    left?: HandleType;
-    right?: HandleType;
-    top?: HandleType;
-    bottom?: HandleType;
-}
-export interface NodeData {
-    square: BaseData & {
-        name: string;
-        style: CSSProperties;
-    };
-    circle: BaseData & {
-        name: string;
-    };
-    rgb: BaseData & {};
-    pixel: BaseData & {
-        name: string;
-        color: string;
-    };
-    title: BaseData & {};
-    subtitle: BaseData & {};
-    image: BaseData & {
-        image: string | StaticImport;
-        text?: string;
-        width?: string;
-        height?: string;
-    };
-    dots: BaseData & {};
-    animated_image: BaseData & {};
-    box: BaseData & {
-        name: string;
-        width?: string;
-        height?: string;
-    };
-}
-
-export type RectPadding = Readonly<{
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
-}>
-
-export type NodeType = Readonly<typeof NODE_TYPES>
-export type NodeTypeKey = Readonly<keyof NodeType>
-
-export type FlowNodeProps<T extends NodeTypeKey> = Readonly<{
-    id?: string;
-    type: T;
-    data: NodeData[T];
-    width?: number;
-    height?: number;
-    position?: Coords;
-    padding?: { top?: number, bottom?: number, left?: number, right?: number };
-    offset?: Coords;
-    reverse_edge?: boolean;
-    disable_left_edge?: boolean;
-    disable_right_edge?: boolean;
-    disable_top_edge?: boolean;
-    disable_bottom_edge?: boolean;
-    parent_id?: string;
-    edge?: FlowEdge;
-}>
-
