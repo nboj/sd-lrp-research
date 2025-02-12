@@ -1,5 +1,5 @@
 import { AnimatedImageEdge } from "@/components/react_flows/edges/AnimatedImageEdge";
-import { BoxNode, CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText } from "@/components/react_flows/nodes/Nodes";
+import { BoxNode, CircleNode, Dots, ImageAnimation, ImageNode, PixelNode, RGBNode, SquareNode, SubtitleText, TitleText, RGBNodeAlt, SquareNodeWrap } from "@/components/react_flows/nodes/Nodes";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import FlowEdge from "./FlowEdge";
 import { CSSProperties } from "react";
@@ -78,6 +78,8 @@ export const NODE_TYPES = {
     dots: Dots,
     animated_image: ImageAnimation,
     box: BoxNode,
+    rgbAlt: RGBNodeAlt,
+    squareWrap: SquareNodeWrap,
 }
 
 type HandleType = "source" | "target";
