@@ -292,6 +292,10 @@ const PopupBody = ({ node_id }: any) => {
                 <>
                     <ModalHeader className="flex flex-col gap-1">Unet</ModalHeader>
                     <ModalBody>
+                        {/* consider changing the following to - 
+                            "This is the bulk of the diffusion process",
+                            "This is the main substance of the diffusion process.", or
+                            something more academic.*/}
                         <p>This is the beef of the diffusion process. The unet takes the input noisy image, and predicts noise to remove from it.</p>
                         <p>For layer-wise relevance propagation, you can checkout <Link className={`text-blue-500`} href='/unet'>this</Link> where we explain in more detail.</p>
                         <div>
