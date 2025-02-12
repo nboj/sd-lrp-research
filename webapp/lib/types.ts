@@ -123,6 +123,8 @@ export interface NodeData {
         width?: string;
         height?: string;
     };
+    rgbAlt: BaseData & {}
+    squareWrap: BaseData & {},
 }
 
 export type RectPadding = Readonly<{
