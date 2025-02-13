@@ -20,7 +20,7 @@ const initial_nodes = [
         data: {
             name: "Inputs",
         },
-        position: { x:135, y: -220 }
+        position: { x: 135, y: -220 }
     },
     {
         id: 'rgbAlt_img',
@@ -74,7 +74,7 @@ const initial_nodes = [
             name: "R",
             disable_left: true,
             disable_right: true,
-            
+
         },
         position: { x: 40, y: 60 },
         parentId: 'rgbAlt',
@@ -98,7 +98,7 @@ const initial_nodes = [
             disable_right: true,
             disable_bottom: false
         },
-        position: {x: -250, y: 50 }
+        position: { x: -250, y: 50 }
     },
     {
         id: 'time_input_embeds_img',
@@ -172,8 +172,8 @@ const initial_edges = [
         source: "text_input_embeds",
         target: 'Unet'
     },
-    { 
-        id: "etime-unet", 
+    {
+        id: "etime-unet",
         type: 'image',
         data: {
             node: 'time_input_embeds_img',
@@ -199,7 +199,8 @@ const initial_edges = [
         source: "time_input_embeds",
         target: 'Unet'
     },
-    { id: "ergb-unet",
+    {
+        id: "ergb-unet",
         type: 'image',
         data: {
             node: 'rgbAlt_img',
@@ -223,7 +224,8 @@ const initial_edges = [
         },
         animated: true,
         source: "rgbAlt",
-        target: 'Unet' },   
+        target: 'Unet'
+    },
 ]
 
 const PopupBody = ({ node_id }: any) => {
@@ -239,11 +241,11 @@ const PopupBody = ({ node_id }: any) => {
                     <ModalHeader className="flex flex-col gap-1">Text Input Embeddings</ModalHeader>
                     <ModalBody>
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique. 
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique.
                             Etiam velit mauris, tempor ac neque vel, mollis rhoncus magna.
                         </p>
                         <div>
-                           <Image src={text_embeddings}alt='' className={'rounded-[5px] mx-auto'}  />
+                            <Image src={text_embeddings} alt='' className={'rounded-[5px] mx-auto'} />
                         </div>
                     </ModalBody>
                 </>
@@ -254,11 +256,11 @@ const PopupBody = ({ node_id }: any) => {
                     <ModalHeader className="flex flex-col gap-1">Time Input Embeddings</ModalHeader>
                     <ModalBody>
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique. 
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique.
                             Etiam velit mauris, tempor ac neque vel, mollis rhoncus magna.
                         </p>
                         <div>
-                           <Image src={time_embeddings}alt='' className={'rounded-[5px] mx-auto'}  />
+                            <Image src={time_embeddings} alt='' className={'rounded-[5px] mx-auto'} />
                         </div>
                     </ModalBody>
                 </>
@@ -273,11 +275,11 @@ const PopupBody = ({ node_id }: any) => {
                     <ModalHeader className="flex flex-col gap-1">Initial Random Noise Latent Input</ModalHeader>
                     <ModalBody>
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique. 
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada pellentesque tristique.
                             Etiam velit mauris, tempor ac neque vel, mollis rhoncus magna.
                         </p>
                         <div>
-                           <Image src={rgb_popup_img}alt='' className={'rounded-[5px] mx-auto'}  />
+                            <Image src={rgb_popup_img} alt='' className={'rounded-[5px] mx-auto'} />
                         </div>
                     </ModalBody>
                 </>
@@ -297,17 +299,17 @@ const InputsDiagram = () => {
     const [selectedId, setSelectedId] = useState<string>("")
     const handle_click = useCallback((_: any, node: any) => {
         switch (node.id) {
-            case "Init_Rand":
-            case "Unet":
-            case "text_input_embeds":
-            case "time_input_embeds":
-            case "rgbAlt":
-            case "pixel-1":
-            case "pixel-2":
-            case "pixel-3":
-                setSelectedId(node.id)
-                onOpen()
-                break;
+            //case "Init_Rand":
+            //case "Unet":
+            //case "text_input_embeds":
+            //case "time_input_embeds":
+            //case "rgbAlt":
+            //case "pixel-1":
+            //case "pixel-2":
+            //case "pixel-3":
+            //    setSelectedId(node.id)
+            //    onOpen()
+            //    break;
             default: break;
         }
     }, [])
@@ -320,8 +322,8 @@ const InputsDiagram = () => {
             >
                 <PopupBody node_id={selectedId} />
             </Popup>
-          <ReactFlow 
-                id='flow-3'                
+            <ReactFlow
+                id='flow-3'
                 nodeTypes={NODE_TYPES}
                 edgeTypes={EDGE_TYPES}
                 nodes={nodes}
@@ -335,15 +337,15 @@ const InputsDiagram = () => {
                 elementsSelectable={false}
                 onNodeClick={handle_click}
                 zoomOnDoubleClick={false}
-                >
+            >
                 <Background id="bg-1" />
                 <Controls
                     showInteractive={false}
                     showZoom={false}
                     className={styles.controls}
                 />
-                
-          </ReactFlow>
+
+            </ReactFlow>
         </div>
     );
 };
