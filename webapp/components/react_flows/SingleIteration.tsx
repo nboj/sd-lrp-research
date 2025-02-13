@@ -67,33 +67,22 @@ const initial_nodes = [
         id: 'pixel-1',
         type: 'pixel',
         data: {
-            color: '#4D527D',
-            name: "B",
+            color: '#7D4D4D',
+            name: "Pos",
             disable_left: true,
         },
-        position: { x: 60, y: 280 },
+        position: { x: 60, y: 90 },
         parentId: 'rgb',
     },
     {
         id: 'pixel-2',
         type: 'pixel',
         data: {
-            color: '#4D7D5B',
-            name: "G",
+            color: '#4D527D',
+            name: "Neg",
             disable_left: true,
         },
-        position: { x: 60, y: 160 },
-        parentId: 'rgb',
-    },
-    {
-        id: 'pixel-3',
-        type: 'pixel',
-        data: {
-            color: '#7D4D4D',
-            name: "R",
-            disable_left: true,
-        },
-        position: { x: 60, y: 40 },
+        position: { x: 60, y: 230 },
         parentId: 'rgb',
     },
     {
@@ -245,7 +234,6 @@ const initial_edges = [
     },
     { id: "epixel-1", animated: true, source: "unet", target: 'pixel-1' },
     { id: "epixel-2", animated: true, source: "unet", target: 'pixel-2' },
-    { id: "epixel-3", animated: true, source: "unet", target: 'pixel-3' },
 ]
 
 const PopupBody = ({ node_id }: any) => {
@@ -328,12 +316,11 @@ const PopupBody = ({ node_id }: any) => {
         case "rgb":
         case "pixel-1":
         case "pixel-2":
-        case "pixel-3":
             return (
                 <>
                     <ModalHeader className="flex flex-col gap-1">Input Latents</ModalHeader>
                     <ModalBody>
-                        <p>The inpput latents are the latent representation of the RGB image input. The relevance scores are also in this latent representation, which need to be converted back to pixel representation before generating the LRP heatmap.</p>
+                        <p>The input latents are the latent representation of the RGB image input. The relevance scores are also in this latent representation, which need to be converted back to pixel representation before generating the LRP heatmap.</p>
                         <div>
                             <Image src={lrp_heatmap} alt='' className={'rounded-[5px] mx-auto'} />
                         </div>

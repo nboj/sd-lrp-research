@@ -2,7 +2,7 @@
 import styles from '@/components/navbar/Navbar.module.css';
 import Link from "@/components/ui/link/Link";
 import { FaInfoCircle } from "react-icons/fa";
-import { RiHammerFill } from "react-icons/ri";
+//import { RiHammerFill } from "react-icons/ri";
 import { BsClipboard2PulseFill } from "react-icons/bs";
 import { usePathname } from 'next/navigation';
 import { BsGridFill } from "react-icons/bs";
@@ -17,12 +17,12 @@ const links: LinkType[] = [
         href: "/",
         icon: <FaInfoCircle />
     },
-    {
-        name: "Unet Architecture",
-        href: "/unet",
-        icon: <RiHammerFill />,
-        disabled: true,
-    },
+    //{
+    //    name: "Unet Architecture",
+    //    href: "/unet",
+    //    icon: <RiHammerFill />,
+    //    disabled: true,
+    //},
     {
         name: "Results",
         href: "/results",
