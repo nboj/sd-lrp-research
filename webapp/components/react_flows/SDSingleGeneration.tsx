@@ -20,7 +20,7 @@ const PopupBody = ({ node_id }: any) => {
                 <>
                     <ModalHeader className="flex flex-col gap-1">Predicted Noise</ModalHeader>
                     <ModalBody>
-                        {/*@ts-ignore*/}
+                        {/*@ts-expect-error*/}
                         <SingleGenerationRemake />
                     </ModalBody>
                 </>
