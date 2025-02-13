@@ -196,36 +196,24 @@ const initial_nodes = [
         id: getId('pixel-1'),
         type: 'pixel',
         data: {
-            color: '#4D527D',
-            name: "B",
-            disable_left: true,
+            color: '#7D4D4D',
+            name: "Pos",
             disable_right: true,
+            disable_left: true,
         },
-        position: { x: 60, y: 280 },
+        position: { x: 60, y: 90 },
         parentId: getId('rgb'),
     },
     {
         id: getId('pixel-2'),
         type: 'pixel',
         data: {
-            color: '#4D7D5B',
-            name: "G",
+            color: '#4D527D',
+            name: "Neg",
             disable_right: true,
             disable_left: true,
         },
-        position: { x: 60, y: 160 },
-        parentId: getId('rgb'),
-    },
-    {
-        id: getId('pixel-3'),
-        type: 'pixel',
-        data: {
-            color: '#7D4D4D',
-            name: "R",
-            disable_right: true,
-            disable_left: true,
-        },
-        position: { x: 60, y: 40 },
+        position: { x: 60, y: 230 },
         parentId: getId('rgb'),
     },
     getIteration(getId('iter_0'), single_iteration_img, 'Iteration 0', incXPos(400)),
@@ -423,7 +411,6 @@ const PopupBody = ({ node_id }: any) => {
         case getId("rgb"):
         case getId("pixel-1"):
         case getId("pixel-2"):
-        case getId("pixel-3"):
         default:
             return (
                 <ModalHeader className="flex flex-col gap-1">Error.</ModalHeader>
@@ -450,7 +437,6 @@ const SingleGeneration = ({ id }: { id?: string }) => {
             case getId("rgb"):
             case getId("pixel-1"):
             case getId("pixel-2"):
-            case getId("pixel-3"):
                 setSelectedId(node.id)
                 onOpen()
                 break;

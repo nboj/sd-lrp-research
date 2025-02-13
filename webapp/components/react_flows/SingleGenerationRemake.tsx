@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import styles from '@/components/react_flows/SingleGeneration.module.css';
 import FlowNode from "@/lib/FlowNode"
 import single_iteration_img from '@/public/single_generation/single_iteration.png';
+import { ImageProps } from "next/image"
 
 const build_rgb = (root: FlowNode, graph: FlowGraph) => {
     root
@@ -66,7 +67,11 @@ const build_rgb = (root: FlowNode, graph: FlowGraph) => {
     return rgb;
 }
 
-const SingleGenerationRemake = () => {
+type SingleGenProps = Readonly<{
+    lrp_noise: ImageProps;
+    lrp_text: ImageProps;
+}>
+const SingleGenerationRemake = ({ lrp_text, lrp_noise }: SingleGenProps) => {
     const graph = useMemo(() => {
         const _graph = new FlowGraph({
             type: 'circle',

@@ -31,6 +31,7 @@
 .why_lrp_container {
   position: relative;
   display: flex;
+  container: why_lrp_container / inline-size;
   justify-content: space-between;
   gap: 5rem;
 
@@ -42,14 +43,15 @@
 .lrp_heatmap_example {
   position: relative;
   container: lrp_heatmap_example / inline-size;
-  height: 100%;
   width: 25%;
   flex-shrink: 0;
+}
 
-  & img {
-    object-fit: cover;
-    border-radius: 3px;
-  }
+.lrp_heatmap_example img {
+  object-fit: cover;
+  border-radius: 3px;
+  width: 100cqw;
+  height: 100cqh;
 }
 
 @media (max-width: 760px) {
