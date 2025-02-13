@@ -7,6 +7,7 @@ import ExampleFlowDiagram from '@/components/react_flows/ExampleFlowDiagram';
 import SDSingleGeneration from '@/components/react_flows/SDSingleGeneration';
 import LRPSingleIteration from '@/components/react_flows/LRPSingleIteration';
 import TestingExample from '@/components/react_flows/TestingExample';
+import InputsDiagram from '@/components/react_flows/InputsDiagram';
 
 type BlockProps = Readonly<{
   children: React.ReactNode;
@@ -15,7 +16,7 @@ const Block = ({ children }: BlockProps) => {
   return (
     <div className={styles.block}>
       {children}
-    </div>
+    </div>  
   )
 }
 
@@ -102,6 +103,7 @@ const About = () => {
           <ExampleFlowDiagram />
           <TestingExample />
         </Block>*/}
+        </Block>
       </div>
     </main>
   );
