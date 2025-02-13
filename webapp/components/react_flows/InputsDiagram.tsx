@@ -10,7 +10,7 @@ import styles from '@/components/react_flows/InputsDiagram.module.css';
 import noise from '@/public/inputs_diagram/noise.png';
 import text_embeddings from '@/public/inputs_diagram/text_embeddings.png';
 import time_embeddings from '@/public/inputs_diagram/time_embeddings.png';
-import rgb_popup_img from '@/public/inputs_diagram/placeholder.png';
+import rgb_popup_img from '@/public/inputs_diagram/noise.png';
 
 
 const initial_nodes = [
@@ -226,10 +226,9 @@ const initial_edges = [
         target: 'Unet' },   
 ]
 
-{/* Descriptions need filled. */}
 const PopupBody = ({ node_id }: any) => {
     switch (node_id) {
-        case "Unet":{/* should this be clickable in every chart? */}
+        case "Unet":
             return (
                 <>
                 </>
