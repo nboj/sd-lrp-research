@@ -4,9 +4,9 @@
 @tailwind utilities;
 
 :root {
-  --background: #F5F5F5;
+  --background: #FFFFFF;
   --foreground: #242326;
-  --primary: #E5E5E5;
+  --primary: #f2e9e4;
   --secondary: #DBDADE;
   --node_br: 12px;
   --content1: #f5f5f5;

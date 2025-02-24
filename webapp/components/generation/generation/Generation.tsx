@@ -232,6 +232,12 @@ const Generation = ({ generation }: Props) => {
     }, [generateAssets])
     return (
         <div className={styles.wrapper}>
+            <div className={styles.labels_container}>
+                <h2>LRP</h2>
+                <h2>LOG LRP</h2>
+                <h2>NOISE</h2>
+                <h2>PRED NOISE</h2>
+            </div>
             {
                 assets.length > 0 && index < assets.length ? (
                     <>
