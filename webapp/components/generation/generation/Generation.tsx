@@ -1,5 +1,5 @@
 'use client'
-import { Asset, AssetType, FullGeneration, FullIteration } from "@/lib/types";
+import { Asset, AssetType, FullGeneration } from "@/lib/types";
 import LRPText from '@/components/lrp_text/LRPText'
 import { getRelevanceColor, parseRelevanceScores, parseStringArray } from "@/lib/utils";
 import NextImage from 'next/image'
@@ -53,56 +53,100 @@ const Generation = ({ generation }: Props) => {
     const start_time = useRef<number>(Date.now())
     const current_animation_frame = useRef<number>(0)
     const average1 = useMemo(() => {
-        const final: any = generation.iterations.reduce((accumulator: any, b: FullIteration) => {
-            const rels = b.assets.find((item: Asset) => item.asset_type === AssetType.TEXT_VALUE_SCORES)
-            if (accumulator.length != null) {
-                return parseRelevanceScores(rels?.text_relevance[0]).map((item: number, index: number) => item + accumulator[index])
-            } else {
-                return parseRelevanceScores(rels?.text_relevance[0])
-            }
-        })
-        const text = parseStringArray(generation.generation.prompt[0])
-        const final_data = final.map((item: number, index: number) => ({
-            name: text[index],
-            value: item / generation.iterations.length
-        }))
-        const max = Math.ceil(final_data.reduce((a: any, b: any) => isNaN(a) ? Math.max(Math.abs(a.value), Math.abs(b.value)) : Math.max(Math.abs(a), Math.abs(b.value))) * 1000) / 1000
-        for (let i = 0; i < final_data.length; i++) {
-            final_data[i].value = mapRange(final_data[i].value, -max, max, -100, 100);
-        }
-        const scores = final_data.map((item: any) => item.value)
-        return {
-            final: final_data,
-            scores: scores,
-            domain: [-100, 100]
-        }
-    }, [])
-    const average2 = useMemo(() => {
-        const final: any = generation.iterations.reduce((accumulator: any, b: FullIteration) => {
-            const rels = b.assets.find((item: Asset) => item.asset_type === AssetType.TEXT_KEY_SCORES)
-            if (accumulator.length != null) {
-                return parseRelevanceScores(rels?.text_relevance[0]).map((item: number, index: number) => item + accumulator[index])
-            } else {
-                return parseRelevanceScores(rels?.text_relevance[0])
-            }
-        })
-        const text = parseStringArray(generation.generation.prompt[0])
-        const final_data = final.map((item: number, index: number) => ({
-            name: text[index],
-            value: item / generation.iterations.length
-        }))
-        const max = Math.ceil(final_data.reduce((a: any, b: any) => isNaN(a) ? Math.max(Math.abs(a.value), Math.abs(b.value)) : Math.max(Math.abs(a), Math.abs(b.value))) * 1000) / 1000
-        for (let i = 0; i < final_data.length; i++) {
-            final_data[i].value = mapRange(final_data[i].value, -max, max, -100, 100);
-        }
-        const scores = final_data.map((item: any) => item.value)
-        return {
-            final: final_data,
-            scores: scores,
-            domain: [-100, 100]
-        }
-    }, [])
+        if (generation.iterations.length === 0) return { final: [], scores: [], domain: [-100, 100] };
 
+        // Initialize accumulator as an array of zeros
+        const numScores = parseRelevanceScores(generation.iterations[0].assets.find(
+            (item: Asset) => item.asset_type === AssetType.TEXT_VALUE_SCORES
+        )?.text_relevance[0])?.length ?? 0;
+
+        const summedScores = new Array(numScores).fill(0);
+
+        // Sum all scores
+        for (const iteration of generation.iterations) {
+            const rels = iteration.assets.find(item => item.asset_type === AssetType.TEXT_VALUE_SCORES);
+            if (!rels) continue;
+            const scores = parseRelevanceScores(rels.text_relevance[0]) ?? [];
+            for (let i = 0; i < scores.length; i++) {
+                summedScores[i] += scores[i];
+            }
+        }
+
+        // Compute the average
+        const averagedScores = summedScores.map(sum => sum / generation.iterations.length);
+
+        // Extract prompt words
+        const text = parseStringArray(generation.generation.prompt[0]);
+
+        // Format data
+        const final_data = averagedScores.map((item, index) => ({
+            name: text[index] ?? `Unknown ${index}`,
+            value: item
+        }));
+
+        // Compute min/max for normalization
+        const maxScore = Math.max(...averagedScores);
+        const minScore = Math.min(...averagedScores);
+
+        // Normalize values between -100 and 100
+        for (let i = 0; i < final_data.length; i++) {
+            final_data[i].value = mapRange(final_data[i].value, minScore, maxScore, -100, 100);
+        }
+
+        return {
+            final: final_data,
+            scores: final_data.map(item => item.value),
+            domain: [-100, 100]
+        };
+    }, [generation]);
+
+    const average2 = useMemo(() => {
+        if (generation.iterations.length === 0) return { final: [], scores: [], domain: [-100, 100] };
+
+        // Initialize accumulator as an array of zeros
+        const numScores = parseRelevanceScores(generation.iterations[0].assets.find(
+            (item: Asset) => item.asset_type === AssetType.TEXT_KEY_SCORES
+        )?.text_relevance[0])?.length ?? 0;
+
+        const summedScores = new Array(numScores).fill(0);
+
+        // Sum all scores
+        for (const iteration of generation.iterations) {
+            const rels = iteration.assets.find(item => item.asset_type === AssetType.TEXT_KEY_SCORES);
+            if (!rels) continue;
+            const scores = parseRelevanceScores(rels.text_relevance[0]) ?? [];
+            for (let i = 0; i < scores.length; i++) {
+                summedScores[i] += scores[i];
+            }
+        }
+
+        // Compute the average
+        const averagedScores = summedScores.map(sum => sum / generation.iterations.length);
+
+        // Extract prompt words
+        const text = parseStringArray(generation.generation.prompt[0]);
+
+        // Format data
+        const final_data = averagedScores.map((item, index) => ({
+            name: text[index] ?? `Unknown ${index}`,
+            value: item
+        }));
+
+        // Compute min/max for normalization
+        const maxScore = Math.max(...averagedScores);
+        const minScore = Math.min(...averagedScores);
+
+        // Normalize values between -100 and 100
+        for (let i = 0; i < final_data.length; i++) {
+            final_data[i].value = mapRange(final_data[i].value, minScore, maxScore, -100, 100);
+        }
+
+        return {
+            final: final_data,
+            scores: final_data.map(item => item.value),
+            domain: [-100, 100]
+        };
+    }, [generation]);
 
     const [loaded, setLoaded] = useState<boolean>(false);
     const load_count = useRef<number>(0)

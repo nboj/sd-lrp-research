@@ -15,7 +15,7 @@ const del_asset_list = async (paths: string[]) => {
 
 export const upload = async (_: any, formData: FormData) => {
     const start = Date.now()
-    const prompt: string = (formData.get('prompt') as any)?.split(',').map((item: any) => item ? item : ',')
+    const prompt: string = (formData.get('prompt') as any)?.split(' ').map((item: string) => item + " ");
     console.log(prompt)
     const noise_pred: File[] = formData.getAll('noise_pred') as any[]
     const noise: File[] = formData.getAll('noise') as any[]

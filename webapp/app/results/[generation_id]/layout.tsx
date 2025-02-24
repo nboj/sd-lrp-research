@@ -5,23 +5,23 @@ import Sidebar from "@/app/results/[generation_id]/components/Sidebar";
 export const dynamic = 'force-static'
 
 type Props = Readonly<{
-  children: React.ReactNode;
-  params: Promise<{ generation_id: string }>
+    children: React.ReactNode;
+    params: Promise<{ generation_id: string }>
 }>
 export default async function RootLayout({ children, params }: Props) {
-  const { generation_id } = await params
-  const generations = await get_generations();
-  if (generations.generations && !generations.error) {
-    return (
-      <main className={styles.main}>
-        <div className={styles.inner_container}>
-          {children}
-        </div>
-        <Sidebar generations={generations.generations} selected={generation_id} className={styles.sidebar} />
-      </main>
-    )
-  } else {
-    console.log("Error: ", generations.error)
-    return <div>Server Error.</div>
-  }
+    const { generation_id } = await params
+    const generations = await get_generations();
+    if (generations.generations && !generations.error) {
+        return (
+            <main className={styles.main}>
+                <div className={styles.inner_container}>
+                    {children}
+                </div>
+                <Sidebar generations={generations.generations} selected={generation_id} className={styles.sidebar} />
+            </main>
+        )
+    } else {
+        console.log("Error: ", generations.error, generations)
+        return <div>Server Error.</div>
+    }
 }

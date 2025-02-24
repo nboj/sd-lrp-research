@@ -4,11 +4,12 @@
 @tailwind utilities;
 
 :root {
-  --background: #151515;
-  --foreground: #DCDCDC;
-  --primary: #272727;
-  --secondary: #4B4B4B;
+  --background: #F5F5F5;
+  --foreground: #242326;
+  --primary: #E5E5E5;
+  --secondary: #DBDADE;
   --node_br: 12px;
+  --content1: #f5f5f5;
   height: 100%;
 }
 
@@ -83,5 +84,16 @@ p {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #151515;
+    --foreground: #DCDCDC;
+    --primary: #272727;
+    --secondary: #4B4B4B;
+    --content1: #18181b;
+    --node_br: 12px;
   }
 }

@@ -4,7 +4,7 @@
   flex-shrink: 0;
   padding: 0 10px;
   width: calc(222px + 3vw);
-  border-right: 1px solid var(--primary);
+  border-right: 1px solid var(--secondary);
 }
 
 .links_container {
