@@ -270,7 +270,11 @@ const Generation = ({ generation }: Props) => {
                     size={'lg'}
                     showSteps
                     className={styles.iteration_slider}
-                    classNames={{ label: styles.iteration_label, value: styles.iteration_value }}
+                    classNames={{
+                        label: styles.iteration_label,
+                        value: styles.iteration_value,
+                        step: styles.slider_step,
+                    }}
                     onChange={(value) => {
                         setIndex(value as number)
                         setAnimating(false)
@@ -319,7 +323,6 @@ const Generation = ({ generation }: Props) => {
                                             className={styles.bar}
                                             maxBarSize={100}
                                             dataKey={'value'}
-                                            fill={'white'}
                                             shape={({ x, y, width, height, value }: any) => {
                                                 return (
                                                     <Rectangle
@@ -357,7 +360,6 @@ const Generation = ({ generation }: Props) => {
                                             className={styles.bar}
                                             maxBarSize={100}
                                             dataKey={'value'}
-                                            fill={'white'}
                                             shape={({ x, y, width, height, value }: any) => {
                                                 return (
                                                     <Rectangle
@@ -394,7 +396,6 @@ const Generation = ({ generation }: Props) => {
                                     className={styles.bar}
                                     maxBarSize={100}
                                     dataKey={'value'}
-                                    fill={'white'}
                                     shape={({ x, y, width, height, value }: any) => {
                                         return (
                                             <Rectangle
@@ -425,7 +426,6 @@ const Generation = ({ generation }: Props) => {
                                     className={styles.bar}
                                     maxBarSize={100}
                                     dataKey={'value'}
-                                    fill={'white'}
                                     shape={({ x, y, width, height, value }: any) => {
                                         return (
                                             <Rectangle

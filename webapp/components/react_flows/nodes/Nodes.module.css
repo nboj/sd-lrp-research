@@ -33,7 +33,7 @@
 .rgb_node {
   width: 200px;
   height: 400px;
-  display: flex; 
+  display: flex;
   flex-direction: column;
   background: var(--primary);
   border: 2px solid var(--secondary);

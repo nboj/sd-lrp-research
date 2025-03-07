@@ -31,7 +31,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: color-mix(in srgb, var(--secondary), white 50%);
+    color: var(--foreground2);
     gap: 1.2rem;
     top: 50%;
     left: 1rem;
@@ -62,7 +62,7 @@
 
 .lrp_label {
     font-size: 2rem;
-    color: color-mix(in srgb, var(--primary), white 50%);
+    color: var(--foreground2);
 }
 
 .lrp_text {
@@ -92,15 +92,20 @@
 }
 
 .iteration_label {
-    color: var(--secondary);
+    color: var(--foreground2);
 }
 
 .iteration_value {
-    color: var(--secondary);
+    color: var(--foreground2);
 }
 
 .iteration_slider [data-slot='track'] {
     cursor: pointer;
+    background: var(--content1);
+}
+
+.slider_step {
+    background: var(--secondary);
 }
 
 .speed_slider [data-slot='track'] {
@@ -131,18 +136,18 @@
 }
 
 .slow_control {
-    color: #6c757d;
+    color: var(--foreground2);
 }
 
 .fast_control {
-    color: #6c757d;
+    color: var(--foreground2);
 }
 
 .control_button {
     font-size: 2rem;
     margin-inline: auto;
     cursor: pointer;
-    color: color-mix(in srgb, white, black 20%);
+    color: var(--foreground2);
     transform: scale(1);
     transition: 0.1s ease-in-out;
 }
