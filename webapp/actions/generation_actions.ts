@@ -40,10 +40,12 @@ export const get_generations = async () => {
       SELECT * FROM generations
     `
         for (let i = 0; i < generation_rows.length; i++) {
+            // used to get the dislpay image
             const { rows: iterations }: { rows: Iteration[] } = await client.sql`select * from iterations where generation_id = ${generation_rows[i].id} order by index desc limit 1`
             const { rows: assets }: { rows: Asset[] } = await client.sql`select * from assets where iteration_id = ${iterations[0].id}`
             generation_rows[i].display_image = assets.find((item) => item.asset_type === AssetType.NOISE)
 
+            // used to collect average lrp scores
             const { rows: iterations2 }: { rows: Iteration[] } = await client.sql`select * from iterations where generation_id = ${generation_rows[i].id} order by index asc`
             let total = [];
             for (let j = 0; j < iterations2.length; ++j) {
@@ -51,28 +53,35 @@ export const get_generations = async () => {
                 const scores = parseRelevanceScores(assets2.find((item) => item.asset_type === AssetType.TEXT_KEY_SCORES)?.text_relevance[0]);
                 total.push(scores);
             }
-            const final = total.reduce((acumulator: any, b: any) => {
-                if (acumulator.length != null) {
-                    return b.map((item: number, index: number) => {
-                        return item + acumulator[index]
-                    })
-                } else {
-                    return b;
-                }
-            })
             let { rows: assets2 }: { rows: Asset[] } = await client.sql`select * from assets where iteration_id = ${iterations2[0].id}`
-            total = final.map((item: number) => item / iterations2.length);
-            const max = Math.ceil(total.reduce((a: any, b: any) => isNaN(a) ? Math.max(Math.abs(a), Math.abs(b)) : Math.max(Math.abs(a), Math.abs(b))) * 1000) / 1000
-            total = total.map((item: number) => (item - (-max)) / (max - (-max)) * 2 - 1)
+
+            if (total.length === 0) {
+                return { error: "No valid scores found." };
+            }
+            const numScores = total[0]?.length ?? 0;
+            const summedScores = new Array(numScores).fill(0);
+            for (const scores of total) {
+                for (let i = 0; i < scores.length; i++) {
+                    summedScores[i] += scores[i];
+                }
+            }
+
+            const averagedScores = summedScores.map(sum => sum / total.length);
+
+            const minScore = Math.min(...averagedScores);
+            const maxScore = Math.max(...averagedScores);
+
+            const normalizedScores = averagedScores.map(item =>
+                (item - minScore) / (maxScore - minScore) * 2 - 1
+            );
             generation_rows[i].display_text = {
                 ...assets2[0],
-                text_relevance: [`{${total.join(',')}}`]
+                text_relevance: [`{${normalizedScores.join(',')}}`]
             }
-            //value = Math.max(min, Math.min(max, value));
-            //const normalized = (value - min) / (max - min) * 2 - 1;
         };
         return { generations: generation_rows }
     } catch (e: any) {
+        console.log(e)
         return { error: e }
     }
 }

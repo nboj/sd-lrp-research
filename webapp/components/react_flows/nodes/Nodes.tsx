@@ -61,7 +61,7 @@ CircleNode.displayName = 'CircleNode'
 
 const ImageNode = memo(({ data }: any) => {
     return (
-        <Card className={`${styles.node} dark ${styles.image_node}`} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
+        <Card className={`${styles.node} ${styles.image_node}`} style={{ scale: data.scale, ...data.width && { width: data.width }, ...data.height && { height: data.height } }}>
             <Handles disable_left disable_right {...data} />
             <CardBody>
                 <NextImage src={data.image} alt='' className={styles.image_node_image} />

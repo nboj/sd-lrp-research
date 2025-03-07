@@ -3,27 +3,30 @@ import { nextui } from '@nextui-org/react';
 
 
 const config: Config = {
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        primary: {
-          DEFAULT: "var(--primary)"
+    content: [
+        "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+        "./components/**/*.{js,ts,jsx,tsx,mdx}",
+        "./app/**/*.{js,ts,jsx,tsx,mdx}",
+        "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    ],
+    theme: {
+        extend: {
+            colors: {
+                background: "var(--background)",
+                foreground: "var(--foreground)",
+                primary: {
+                    DEFAULT: "var(--primary)"
+                },
+                secondary: {
+                    DEFAULT: "var(--secondary)"
+                },
+                content1: {
+                    DEFAULT: "var(--content1)"
+                }
+            },
         },
-        secondary: {
-          DEFAULT: "var(--secondary)"
-        },
-      },
     },
-  },
-  darkMode: "class",
-  plugins: [nextui()],
+    darkMode: "class",
+    plugins: [nextui()],
 };
 export default config;

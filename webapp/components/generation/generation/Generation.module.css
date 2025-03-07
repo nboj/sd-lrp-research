@@ -6,7 +6,7 @@
 
 .wrapper {
     container-type: inline-size;
-    max-width: 800px;
+    max-width: 1500px;
     width: 100%;
     margin-inline: auto;
 }
@@ -51,6 +51,13 @@
     flex-direction: column;
     gap: 2rem;
     margin-block: 3rem;
+}
+
+.chart_container {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
 }
 
 .lrp_label {
@@ -150,6 +157,18 @@
     transform: scale(0.9)
 }
 
+.labels_container {
+    display: flex;
+    width: 100cqw;
+    padding: 1rem;
+
+    &>* {
+        font-size: 2cqw;
+        flex-basis: 25%;
+        text-align: center;
+    }
+}
+
 @container main (max-width: 1130px) {
     .back_link {
         position: relative;
@@ -157,6 +176,10 @@
         left: 0;
         transform: translateY(0);
         justify-content: flex-start;
+    }
+
+    .chart_container {
+        flex-direction: column;
     }
 }
 

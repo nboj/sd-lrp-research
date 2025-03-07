@@ -1,5 +1,5 @@
 'use client'
-import { Asset, AssetType, FullGeneration, FullIteration } from "@/lib/types";
+import { Asset, AssetType, FullGeneration } from "@/lib/types";
 import LRPText from '@/components/lrp_text/LRPText'
 import { getRelevanceColor, parseRelevanceScores, parseStringArray } from "@/lib/utils";
 import NextImage from 'next/image'
@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Slider } from "@nextui-org/react";
 import { FaPlay, FaPause } from "react-icons/fa6";
 import { PiFastForwardBold, PiFastForwardFill } from "react-icons/pi";
-import { Bar, Tooltip, BarChart, Customized, Rectangle, ReferenceLine, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from "recharts";
+import { Bar, Tooltip, BarChart, Rectangle, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 type AssetImapeProps = Readonly<{
     pathname: string;
@@ -53,56 +53,100 @@ const Generation = ({ generation }: Props) => {
     const start_time = useRef<number>(Date.now())
     const current_animation_frame = useRef<number>(0)
     const average1 = useMemo(() => {
-        const final: any = generation.iterations.reduce((accumulator: any, b: FullIteration) => {
-            const rels = b.assets.find((item: Asset) => item.asset_type === AssetType.TEXT_VALUE_SCORES)
-            if (accumulator.length != null) {
-                return parseRelevanceScores(rels?.text_relevance[0]).map((item: number, index: number) => item + accumulator[index])
-            } else {
-                return parseRelevanceScores(rels?.text_relevance[0])
-            }
-        })
-        const text = parseStringArray(generation.generation.prompt[0])
-        const final_data = final.map((item: number, index: number) => ({
-            name: text[index],
-            value: item / generation.iterations.length
-        }))
-        const max = Math.ceil(final_data.reduce((a: any, b: any) => isNaN(a) ? Math.max(Math.abs(a.value), Math.abs(b.value)) : Math.max(Math.abs(a), Math.abs(b.value))) * 1000) / 1000
-        for (let i = 0; i < final_data.length; i++) {
-            final_data[i].value = mapRange(final_data[i].value, -max, max, -100, 100);
-        }
-        const scores = final_data.map((item: any) => item.value)
-        return {
-            final: final_data,
-            scores: scores,
-            domain: [-100, 100]
-        }
-    }, [])
-    const average2 = useMemo(() => {
-        const final: any = generation.iterations.reduce((accumulator: any, b: FullIteration) => {
-            const rels = b.assets.find((item: Asset) => item.asset_type === AssetType.TEXT_KEY_SCORES)
-            if (accumulator.length != null) {
-                return parseRelevanceScores(rels?.text_relevance[0]).map((item: number, index: number) => item + accumulator[index])
-            } else {
-                return parseRelevanceScores(rels?.text_relevance[0])
-            }
-        })
-        const text = parseStringArray(generation.generation.prompt[0])
-        const final_data = final.map((item: number, index: number) => ({
-            name: text[index],
-            value: item / generation.iterations.length
-        }))
-        const max = Math.ceil(final_data.reduce((a: any, b: any) => isNaN(a) ? Math.max(Math.abs(a.value), Math.abs(b.value)) : Math.max(Math.abs(a), Math.abs(b.value))) * 1000) / 1000
-        for (let i = 0; i < final_data.length; i++) {
-            final_data[i].value = mapRange(final_data[i].value, -max, max, -100, 100);
-        }
-        const scores = final_data.map((item: any) => item.value)
-        return {
-            final: final_data,
-            scores: scores,
-            domain: [-100, 100]
-        }
-    }, [])
+        if (generation.iterations.length === 0) return { final: [], scores: [], domain: [-100, 100] };
 
+        // Initialize accumulator as an array of zeros
+        const numScores = parseRelevanceScores(generation.iterations[0].assets.find(
+            (item: Asset) => item.asset_type === AssetType.TEXT_VALUE_SCORES
+        )?.text_relevance[0])?.length ?? 0;
+
+        const summedScores = new Array(numScores).fill(0);
+
+        // Sum all scores
+        for (const iteration of generation.iterations) {
+            const rels = iteration.assets.find(item => item.asset_type === AssetType.TEXT_VALUE_SCORES);
+            if (!rels) continue;
+            const scores = parseRelevanceScores(rels.text_relevance[0]) ?? [];
+            for (let i = 0; i < scores.length; i++) {
+                summedScores[i] += scores[i];
+            }
+        }
+
+        // Compute the average
+        const averagedScores = summedScores.map(sum => sum / generation.iterations.length);
+
+        // Extract prompt words
+        const text = parseStringArray(generation.generation.prompt[0]);
+
+        // Format data
+        const final_data = averagedScores.map((item, index) => ({
+            name: text[index] ?? `Unknown ${index}`,
+            value: item
+        }));
+
+        // Compute min/max for normalization
+        const maxScore = Math.max(...averagedScores);
+        const minScore = Math.min(...averagedScores);
+
+        // Normalize values between -100 and 100
+        for (let i = 0; i < final_data.length; i++) {
+            final_data[i].value = mapRange(final_data[i].value, minScore, maxScore, -100, 100);
+        }
+
+        return {
+            final: final_data,
+            scores: final_data.map(item => item.value),
+            domain: [-100, 100]
+        };
+    }, [generation]);
+
+    const average2 = useMemo(() => {
+        if (generation.iterations.length === 0) return { final: [], scores: [], domain: [-100, 100] };
+
+        // Initialize accumulator as an array of zeros
+        const numScores = parseRelevanceScores(generation.iterations[0].assets.find(
+            (item: Asset) => item.asset_type === AssetType.TEXT_KEY_SCORES
+        )?.text_relevance[0])?.length ?? 0;
+
+        const summedScores = new Array(numScores).fill(0);
+
+        // Sum all scores
+        for (const iteration of generation.iterations) {
+            const rels = iteration.assets.find(item => item.asset_type === AssetType.TEXT_KEY_SCORES);
+            if (!rels) continue;
+            const scores = parseRelevanceScores(rels.text_relevance[0]) ?? [];
+            for (let i = 0; i < scores.length; i++) {
+                summedScores[i] += scores[i];
+            }
+        }
+
+        // Compute the average
+        const averagedScores = summedScores.map(sum => sum / generation.iterations.length);
+
+        // Extract prompt words
+        const text = parseStringArray(generation.generation.prompt[0]);
+
+        // Format data
+        const final_data = averagedScores.map((item, index) => ({
+            name: text[index] ?? `Unknown ${index}`,
+            value: item
+        }));
+
+        // Compute min/max for normalization
+        const maxScore = Math.max(...averagedScores);
+        const minScore = Math.min(...averagedScores);
+
+        // Normalize values between -100 and 100
+        for (let i = 0; i < final_data.length; i++) {
+            final_data[i].value = mapRange(final_data[i].value, minScore, maxScore, -100, 100);
+        }
+
+        return {
+            final: final_data,
+            scores: final_data.map(item => item.value),
+            domain: [-100, 100]
+        };
+    }, [generation]);
 
     const [loaded, setLoaded] = useState<boolean>(false);
     const load_count = useRef<number>(0)
@@ -188,6 +232,12 @@ const Generation = ({ generation }: Props) => {
     }, [generateAssets])
     return (
         <div className={styles.wrapper}>
+            <div className={styles.labels_container}>
+                <h2>LRP</h2>
+                <h2>LOG LRP</h2>
+                <h2>NOISE</h2>
+                <h2>PRED NOISE</h2>
+            </div>
             {
                 assets.length > 0 && index < assets.length ? (
                     <>
@@ -250,143 +300,147 @@ const Generation = ({ generation }: Props) => {
                 </div>
             </div>
             <div className={styles.charts_container}>
-                {
-                    assets.length > 0 && index < assets.length ? (
-                        <div>
-                            <div className={styles.lrp_header}>
-                                <p className={styles.lrp_label}>Values for Iteration {index}:</p>
-                                <LRPText className={styles.lrp_text} generation={generation.generation} values={assets[index].text_value_rel} min={assets[index].domain1[0]} max={assets[index].domain1[1]} />
-                            </div>
-                            <ResponsiveContainer height={500} width={"100%"}>
-                                <BarChart data={assets[index].chart_data1} height={500}>
-                                    <XAxis dataKey={'name'} />
-                                    <YAxis dataKey={'value'} domain={assets[index].domain1} />
-                                    <Tooltip wrapperClassName={styles.tooltip_wrapper} />
-                                    <ReferenceLine y={0} stroke="var(--secondary)" />
-                                    <Bar
-                                        animationDuration={100}
-                                        className={styles.bar}
-                                        maxBarSize={100}
-                                        dataKey={'value'}
-                                        fill={'white'}
-                                        shape={({ x, y, width, height, value }: any) => {
-                                            return (
-                                                <Rectangle
-                                                    x={x}
-                                                    y={y}
-                                                    width={width}
-                                                    height={height}
-                                                    fill={getRelevanceColor(value, assets[index].domain1[0], assets[index].domain1[1])}
-                                                />
-                                            );
-                                        }}
-                                    />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-                    ) : (
-                        <p>Loading...</p>
-                    )
-                }
-                {
-                    assets.length > 0 && index < assets.length ? (
-                        <div>
-                            <div className={styles.lrp_header}>
-                                <p className={styles.lrp_label}>Keys for Iteration {index}:</p>
-                                <LRPText className={styles.lrp_text} generation={generation.generation} values={assets[index].text_key_rel} min={assets[index].domain2[0]} max={assets[index].domain2[1]} />
-                            </div>
-                            <ResponsiveContainer height={500} width={"100%"}>
-                                <BarChart data={assets[index].chart_data2} height={500}>
-                                    <XAxis dataKey={'name'} />
-                                    <YAxis dataKey={'value'} domain={assets[index].domain2} />
-                                    <Tooltip wrapperClassName={styles.tooltip_wrapper} />
-                                    <ReferenceLine y={0} stroke="var(--secondary)" />
-                                    <Bar
-                                        animationDuration={100}
-                                        className={styles.bar}
-                                        maxBarSize={100}
-                                        dataKey={'value'}
-                                        fill={'white'}
-                                        shape={({ x, y, width, height, value }: any) => {
-                                            return (
-                                                <Rectangle
-                                                    x={x}
-                                                    y={y}
-                                                    width={width}
-                                                    height={height}
-                                                    fill={getRelevanceColor(value, assets[index].domain2[0], assets[index].domain2[1])}
-                                                />
-                                            );
-                                        }}
-                                    />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-                    ) : (
-                        <p>Loading...</p>
-                    )
-                }
-                <div>
-                    <div className={styles.lrp_header}>
-                        <p className={styles.lrp_label}>Average Values:</p>
-                        <LRPText className={styles.lrp_text} generation={generation.generation} values={average1.scores} min={average1.domain[0]} max={average1.domain[1]} />
-                    </div>
-                    <ResponsiveContainer height={500} width={"100%"}>
-                        <BarChart data={average1.final} height={500}>
-                            <XAxis dataKey={'name'} />
-                            <YAxis dataKey={'value'} domain={average1.domain} />
-                            <Tooltip wrapperClassName={styles.tooltip_wrapper} />
-                            <ReferenceLine y={0} stroke="var(--secondary)" />
-                            <Bar
-                                className={styles.bar}
-                                maxBarSize={100}
-                                dataKey={'value'}
-                                fill={'white'}
-                                shape={({ x, y, width, height, value }: any) => {
-                                    return (
-                                        <Rectangle
-                                            x={x}
-                                            y={y}
-                                            width={width}
-                                            height={height}
-                                            fill={getRelevanceColor(value, average1.domain[0], average1.domain[1])}
+                <div className={styles.chart_container}>
+                    {
+                        assets.length > 0 && index < assets.length ? (
+                            <div>
+                                <div className={styles.lrp_header}>
+                                    <p className={styles.lrp_label}>Values for Iteration {index}:</p>
+                                    <LRPText className={styles.lrp_text} generation={generation.generation} values={assets[index].text_value_rel} min={assets[index].domain1[0]} max={assets[index].domain1[1]} />
+                                </div>
+                                <ResponsiveContainer height={500} width={"100%"}>
+                                    <BarChart data={assets[index].chart_data1} height={500}>
+                                        <XAxis dataKey={'name'} />
+                                        <YAxis dataKey={'value'} domain={assets[index].domain1} />
+                                        <Tooltip wrapperClassName={styles.tooltip_wrapper} />
+                                        <ReferenceLine y={0} stroke="var(--secondary)" />
+                                        <Bar
+                                            animationDuration={100}
+                                            className={styles.bar}
+                                            maxBarSize={100}
+                                            dataKey={'value'}
+                                            fill={'white'}
+                                            shape={({ x, y, width, height, value }: any) => {
+                                                return (
+                                                    <Rectangle
+                                                        x={x}
+                                                        y={y}
+                                                        width={width}
+                                                        height={height}
+                                                        fill={getRelevanceColor(value, assets[index].domain1[0], assets[index].domain1[1])}
+                                                    />
+                                                );
+                                            }}
                                         />
-                                    );
-                                }}
-                            />
-                        </BarChart>
-                    </ResponsiveContainer>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        ) : (
+                            <p>Loading...</p>
+                        )
+                    }
+                    {
+                        assets.length > 0 && index < assets.length ? (
+                            <div>
+                                <div className={styles.lrp_header}>
+                                    <p className={styles.lrp_label}>Keys for Iteration {index}:</p>
+                                    <LRPText className={styles.lrp_text} generation={generation.generation} values={assets[index].text_key_rel} min={assets[index].domain2[0]} max={assets[index].domain2[1]} />
+                                </div>
+                                <ResponsiveContainer height={500} width={"100%"}>
+                                    <BarChart data={assets[index].chart_data2} height={500}>
+                                        <XAxis dataKey={'name'} />
+                                        <YAxis dataKey={'value'} domain={assets[index].domain2} />
+                                        <Tooltip wrapperClassName={styles.tooltip_wrapper} />
+                                        <ReferenceLine y={0} stroke="var(--secondary)" />
+                                        <Bar
+                                            animationDuration={100}
+                                            className={styles.bar}
+                                            maxBarSize={100}
+                                            dataKey={'value'}
+                                            fill={'white'}
+                                            shape={({ x, y, width, height, value }: any) => {
+                                                return (
+                                                    <Rectangle
+                                                        x={x}
+                                                        y={y}
+                                                        width={width}
+                                                        height={height}
+                                                        fill={getRelevanceColor(value, assets[index].domain2[0], assets[index].domain2[1])}
+                                                    />
+                                                );
+                                            }}
+                                        />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        ) : (
+                            <p>Loading...</p>
+                        )
+                    }
                 </div>
-                <div>
-                    <div className={styles.lrp_header}>
-                        <p className={styles.lrp_label}>Average Keys:</p>
-                        <LRPText className={styles.lrp_text} generation={generation.generation} values={average2.scores} min={average2.domain[0]} max={average2.domain[1]} />
+                <div className={styles.chart_container}>
+                    <div>
+                        <div className={styles.lrp_header}>
+                            <p className={styles.lrp_label}>Average Values:</p>
+                            <LRPText className={styles.lrp_text} generation={generation.generation} values={average1.scores} min={average1.domain[0]} max={average1.domain[1]} />
+                        </div>
+                        <ResponsiveContainer height={500} width={"100%"}>
+                            <BarChart data={average1.final} height={500}>
+                                <XAxis dataKey={'name'} />
+                                <YAxis dataKey={'value'} domain={average1.domain} />
+                                <Tooltip wrapperClassName={styles.tooltip_wrapper} />
+                                <ReferenceLine y={0} stroke="var(--secondary)" />
+                                <Bar
+                                    className={styles.bar}
+                                    maxBarSize={100}
+                                    dataKey={'value'}
+                                    fill={'white'}
+                                    shape={({ x, y, width, height, value }: any) => {
+                                        return (
+                                            <Rectangle
+                                                x={x}
+                                                y={y}
+                                                width={width}
+                                                height={height}
+                                                fill={getRelevanceColor(value, average1.domain[0], average1.domain[1])}
+                                            />
+                                        );
+                                    }}
+                                />
+                            </BarChart>
+                        </ResponsiveContainer>
                     </div>
-                    <ResponsiveContainer height={500} width={"100%"}>
-                        <BarChart data={average2.final} height={500}>
-                            <XAxis dataKey={'name'} />
-                            <YAxis dataKey={'value'} domain={average2.domain} />
-                            <Tooltip wrapperClassName={styles.tooltip_wrapper} />
-                            <ReferenceLine y={0} stroke="var(--secondary)" />
-                            <Bar
-                                className={styles.bar}
-                                maxBarSize={100}
-                                dataKey={'value'}
-                                fill={'white'}
-                                shape={({ x, y, width, height, value }: any) => {
-                                    return (
-                                        <Rectangle
-                                            x={x}
-                                            y={y}
-                                            width={width}
-                                            height={height}
-                                            fill={getRelevanceColor(value, average2.domain[0], average2.domain[1])}
-                                        />
-                                    );
-                                }}
-                            />
-                        </BarChart>
-                    </ResponsiveContainer>
+                    <div>
+                        <div className={styles.lrp_header}>
+                            <p className={styles.lrp_label}>Average Keys:</p>
+                            <LRPText className={styles.lrp_text} generation={generation.generation} values={average2.scores} min={average2.domain[0]} max={average2.domain[1]} />
+                        </div>
+                        <ResponsiveContainer height={500} width={"100%"}>
+                            <BarChart data={average2.final} height={500}>
+                                <XAxis dataKey={'name'} />
+                                <YAxis dataKey={'value'} domain={average2.domain} />
+                                <Tooltip wrapperClassName={styles.tooltip_wrapper} />
+                                <ReferenceLine y={0} stroke="var(--secondary)" />
+                                <Bar
+                                    className={styles.bar}
+                                    maxBarSize={100}
+                                    dataKey={'value'}
+                                    fill={'white'}
+                                    shape={({ x, y, width, height, value }: any) => {
+                                        return (
+                                            <Rectangle
+                                                x={x}
+                                                y={y}
+                                                width={width}
+                                                height={height}
+                                                fill={getRelevanceColor(value, average2.domain[0], average2.domain[1])}
+                                            />
+                                        );
+                                    }}
+                                />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
             </div>
         </div>
